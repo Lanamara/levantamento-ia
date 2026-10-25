@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Levantamento com agentes grátis</title>
+<meta name="description" content="Como transformar um tema de pesquisa em referências conferidas, com cienciometria e resumo de cada artigo, usando agentes de IA gratuitos.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LAPIG/UFG">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Levantamento bibliográfico com agentes de IA gratuitos">
+<meta property="og:description" content="Busca por frentes, DOI conferido, cienciometria e leitura integral, com um exemplo real de 49 referências.">
+<meta property="og:url" content="https://victorgit10.github.io/levantamento-ia/">
+<meta property="og:image" content="https://victorgit10.github.io/levantamento-ia/card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --ink:#1a2028; --muted:#59636f; --line:#d9dde3;
+  --accent:#1f4f72; --accent-soft:#e2ecf3; --gold:#9a6a12; --good:#2c6b4a; --good-soft:#e1efe7; --warn:#8a5a0b; --warn-soft:#f5ead3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161b; --card:#1a2028; --ink:#e6eaef; --muted:#9aa6b3; --line:#2e3742;
+    --accent:#8fc0e3; --accent-soft:#1c2c3a; --gold:#f2b84b; --good:#86c9a3; --good-soft:#1b3127; --warn:#e2b765; --warn-soft:#352b18;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161b; --card:#1a2028; --ink:#e6eaef; --muted:#9aa6b3; --line:#2e3742;
+  --accent:#8fc0e3; --accent-soft:#1c2c3a; --gold:#f2b84b; --good:#86c9a3; --good-soft:#1b3127; --warn:#e2b765; --warn-soft:#352b18;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;padding:8px 16px;font-size:14px}
+nav a{color:var(--muted);text-decoration:none;padding:4px 10px;border-radius:999px;white-space:nowrap}
+nav a:hover{background:var(--accent-soft);color:var(--accent)}
+nav a.gh{margin-left:auto;color:var(--accent);font-weight:600}
+section{max-width:980px;margin:0 auto;padding:48px 16px 32px;scroll-margin-top:44px}
+.num{font-size:13px;font-weight:600;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.15;margin:8px 0 12px;text-wrap:balance}
+h2{font-size:clamp(23px,3.3vw,30px);line-height:1.2;margin:6px 0 18px;text-wrap:balance}
+p{margin:0 0 12px;max-width:72ch}
+.lead{font-size:19px;color:var(--muted)}
+.small{font-size:14px;color:var(--muted)}
+a{color:var(--accent)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi b{display:block;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:14px;color:var(--muted)}
+ol.fluxo{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+ol.fluxo li{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+ol.fluxo li > *{min-width:0}
+ol.fluxo .n{width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:15px}
+ol.fluxo b{display:block}
+ol.fluxo span{font-size:15px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;white-space:nowrap}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.tablewrap{overflow-x:auto;border-radius:8px}
+.box{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:14px 16px;margin:18px 0}
+.box.warn{border-left-color:var(--warn)}
+pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 14px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.92em}
+.resumo{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.resumo h3{margin:0 0 8px;font-size:16px}
+.resumo ul{margin:0;padding-left:18px}
+footer{max-width:980px;margin:0 auto;padding:24px 16px 48px;font-size:14px;color:var(--muted)}
+@media (max-width:640px){ body{font-size:16px} section{padding-top:34px} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#como">Como funciona</a>
+  <a href="#exemplo">Exemplo</a>
+  <a href="#resumo">Um resumo</a>
+  <a href="#usar">Como usar</a>
+  <a href="#limites">Limites</a>
+  <a class="gh" href="https://github.com/VictorGit10/levantamento-ia">GitHub</a>
+</nav>
+
+<section>
+  <div class="num">LAPIG/UFG · outubro de 2026</div>
+  <h1>Levantamento bibliográfico com agentes de IA gratuitos</h1>
+  <p class="lead">Um tema de pesquisa vira uma lista de referências conferidas, com dados de citação e um resumo de cada artigo aberto. Tudo com o opencode e o modelo DeepSeek V4.1 Flash gratuito, sem conta e sem assinatura.</p>
+  <div class="kpis">
+    <div class="kpi"><b>49</b><span>artigos com DOI no exemplo</span></div>
+    <div class="kpi"><b>56/56</b><span>DOIs conferidos no Crossref</span></div>
+    <div class="kpi"><b>47</b><span>em acesso aberto</span></div>
+    <div class="kpi"><b>19</b><span>lidos por inteiro e resumidos</span></div>
+  </div>
+</section>
+
+<section id="como">
+  <div class="num">Como funciona</div>
+  <h2>Cinco etapas, cada uma conferível</h2>
+  <ol class="fluxo">
+    <li><div class="n">1</div><div><b>Busca por frentes</b><span>O tema é dividido em 3 a 5 recortes. Cada recorte vira uma pasta com um pedido, e um agente faz a busca na web. Dois agentes por vez.</span></div></li>
+    <li><div class="n">2</div><div><b>Junção e conferência de DOI</b><span>As tabelas viram uma só, sem repetidos. Cada DOI é consultado no Crossref e o título é comparado. O arquivo .bib sai do próprio doi.org.</span></div></li>
+    <li><div class="n">3</div><div><b>Cienciometria</b><span>O OpenAlex devolve, para cada artigo: citações, FWCI (citações normalizadas por área e ano), percentil e se o texto é aberto.</span></div></li>
+    <li><div class="n">4</div><div><b>Leitura integral</b><span>Os PDFs abertos são baixados e o texto é extraído com a página marcada. Um agente lê o artigo inteiro e escreve um resumo fixo, com a página de cada número.</span></div></li>
+    <li><div class="n">5</div><div><b>Tabela final</b><span>Tudo junto, ordenado por citações, com link para o resumo de cada artigo lido.</span></div></li>
+  </ol>
+  <div class="box"><p style="margin:0"><b>Por que frentes:</b> um agente com um tema amplo se perde e repete os mesmos artigos. Com recortes estreitos, cada um vai mais fundo no seu pedaço. <b>Por que conferir o DOI:</b> modelos de linguagem inventam referências com aparência perfeita.</p></div>
+</section>
+
+<section id="exemplo">
+  <div class="num">Exemplo real</div>
+  <h2>Biomassa e carbono da silvicultura em Goiás</h2>
+  <p>Quatro frentes: sensores ópticos, radar e LiDAR, fusão de sensores com aprendizado de máquina, e dados de Goiás e do Cerrado. As 10 referências mais citadas:</p>
+  <div class="tablewrap"><table>
+    <tr><th class="n">Citações</th><th class="n">FWCI</th><th class="n">Percentil</th><th>Referência</th><th>Resumo</th></tr>
+    <tr><td class="n">715</td><td class="n">58.28</td><td class="n">99</td><td>Lang et al. (2023). <a href="https://doi.org/10.1038/s41559-023-02206-6">A high-resolution canopy height model of the Earth</a>. <span class="small">Nature Ecology &amp; Evolution</span></td><td><a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/lang2023/RELATORIO.md">ler</a></td></tr>
+    <tr><td class="n">489</td><td class="n">26.49</td><td class="n">99</td><td>Duncanson et al. (2022). <a href="https://doi.org/10.1016/j.rse.2021.112845">Aboveground biomass density models for NASA’s Global Ecosystem Dynamics Investigation (GEDI) lidar mission</a>. <span class="small">Remote Sensing of Environment</span></td><td><a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/duncanson2022/RELATORIO.md">ler</a></td></tr>
+    <tr><td class="n">402</td><td class="n">20.58</td><td class="n">99</td><td>Santoro et al. (2021). <a href="https://doi.org/10.5194/essd-13-3927-2021">The global forest above-ground biomass pool for 2010 estimated from high-resolution satellite observations</a>. <span class="small">Earth system science data</span></td><td><a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/santoro2021/RELATORIO.md">ler</a></td></tr>
+    <tr><td class="n">358</td><td class="n">24.68</td><td class="n">99</td><td>Quegan et al. (2019). <a href="https://doi.org/10.1016/j.rse.2019.03.032">The European Space Agency BIOMASS mission: Measuring forest above-ground biomass from space</a>. <span class="small">Remote Sensing of Environment</span></td><td><a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/quegan2019/RELATORIO.md">ler</a></td></tr>
+    <tr><td class="n">255</td><td class="n">14.73</td><td class="n">99</td><td>Dubayah et al. (2022). <a href="https://doi.org/10.1088/1748-9326/ac8694">GEDI launches a new era of biomass inference from space</a>. <span class="small">Environmental Research Letters</span></td><td><a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/dubayah2022/RELATORIO.md">ler</a></td></tr>
+    <tr><td class="n">244</td><td class="n">10.36</td><td class="n">99</td><td>Neuenschwander et al. (2019). <a href="https://doi.org/10.3390/rs11141721">Canopy and Terrain Height Retrievals with ICESat-2: A First Look</a>. <span class="small">Remote Sensing</span></td><td><span class="small">—</span></td></tr>
+    <tr><td class="n">232</td><td class="n">8.92</td><td class="n">98</td><td>Silva et al. (2021). <a href="https://doi.org/10.1016/j.rse.2020.112234">Fusing simulated GEDI, ICESat-2 and NISAR data for regional aboveground biomass mapping</a>. <span class="small">Remote Sensing of Environment</span></td><td><span class="small">—</span></td></tr>
+    <tr><td class="n">155</td><td class="n">8.33</td><td class="n">99</td><td>Araza et al. (2022). <a href="https://doi.org/10.1016/j.rse.2022.112917">A comprehensive framework for assessing the accuracy and uncertainty of global above-ground biomass maps</a>. <span class="small">Remote Sensing of Environment</span></td><td><a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/araza2022/RELATORIO.md">ler</a></td></tr>
+    <tr><td class="n">117</td><td class="n">9.64</td><td class="n">99</td><td>Beloiu et al. (2023). <a href="https://doi.org/10.3390/rs15051463">Individual Tree-Crown Detection and Species Identification in Heterogeneous Forests Using Aerial RGB Imagery and Deep Learning</a>. <span class="small">Remote Sensing</span></td><td><a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/beloiu2023/RELATORIO.md">ler</a></td></tr>
+    <tr><td class="n">71</td><td class="n">3.91</td><td class="n">94</td><td>Fayad et al. (2021). <a href="https://doi.org/10.1016/j.rse.2021.112652">A CNN-based approach for the estimation of canopy heights and wood volume from GEDI waveforms</a>. <span class="small">Remote Sensing of Environment</span></td><td><span class="small">—</span></td></tr>
+  </table></div>
+  <p class="small" style="margin-top:8px">A lista completa, com os 49 artigos e as 4 bases oficiais sem DOI, está em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/REFERENCIAS.md">REFERENCIAS.md</a>; ordenada por citação, em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md">exemplo/TABELA.md</a>. O arquivo <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/referencias.bib">referencias.bib</a> importa no Zotero e no Mendeley.</p>
+  <div class="box"><p style="margin:0"><b>O achado que se repetiu nas quatro frentes:</b> não há trabalho publicado sobre biomassa ou carbono da silvicultura em Goiás. O único estudo goiano encontrado mapeia a área plantada (Cabral et al., 2019). É a lacuna que o projeto ocupa.</p></div>
+</section>
+
+<section id="resumo">
+  <div class="num">Um resumo, como sai</div>
+  <h2>Aló et al. (2024), <i>Annals of Forest Science</i></h2>
+  <div class="resumo">
+    <h3>Resultados principais (trecho)</h3>
+    <ul>
+      <li>Melhor modelo linear (Lasso, 6 de 86 variáveis): R² 0,95 e RMSE 12,44 m³/ha na validação [p. 7]</li>
+      <li>Com modelo espacial (GAM): R² 0,96 e RMSE 10,56 m³/ha [p. 8]</li>
+      <li>Integrais de NDVI da série Landsat foram os melhores preditores, r de 0,86 a 0,89 [p. 7]</li>
+    </ul>
+    <h3 style="margin-top:12px">O que não serve ao projeto</h3>
+    <ul>
+      <li>Estima volume de madeira, não biomassa nem carbono: os números não se transferem sem conversão [p. 3]</li>
+      <li>Calibrado no Mato Grosso do Sul, só com sensores ópticos [p. 3, p. 4]</li>
+    </ul>
+  </div>
+  <p class="small" style="margin-top:8px">Os números e as citações deste resumo foram conferidos no texto do artigo. <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/alo2024/RELATORIO.md">Resumo completo</a>.</p>
+</section>
+
+<section id="usar">
+  <div class="num">Como usar</div>
+  <h2>Num computador comum</h2>
+<pre>npm install -g @opencode/cli
+pip install pypdf
+git clone https://github.com/VictorGit10/levantamento-ia
+cd levantamento-ia
+
+# 1. crie meu-tema/frentes/&lt;recorte&gt;/PEDIDO.md a partir de modelos/PEDIDO-busca.md
+python ferramentas/orquestrar.py meu-tema/frentes --paralelo 2
+python ferramentas/juntar.py meu-tema/frentes meu-tema "Título do tema"
+python ferramentas/conferir_doi.py meu-tema/frentes
+python ferramentas/cienciometria.py meu-tema/referencias.bib meu-tema/cienciometria.csv
+python ferramentas/preparar_resumos.py meu-tema/cienciometria.csv pdfs meu-tema/resumos modelos/PEDIDO-resumo.md "Título do tema"
+python ferramentas/orquestrar.py meu-tema/resumos --paralelo 2
+python ferramentas/painel.py meu-tema</pre>
+  <div class="box"><p style="margin:0"><b>Ou peça à sua IA.</b> Um assistente com acesso ao terminal (Claude Code, Codex, opencode) faz tudo isso a partir do tema: “clone este repositório, divida o meu tema em 4 frentes e rode o levantamento completo”.</p></div>
+</section>
+
+<section id="limites">
+  <div class="num">Limites</div>
+  <h2>O que conferir antes de usar</h2>
+  <div class="tablewrap"><table>
+    <tr><th>Ponto</th><th>Na prática</th></tr>
+    <tr><td>Limite gratuito</td><td>Por conexão de internet. Dois agentes por vez funcionam; cinco estouram em minutos.</td></tr>
+    <tr><td>Privacidade</td><td>Segundo a <a href="https://opencode.ai/docs/zen/">documentação do opencode</a> (25/10/2026), DeepSeek e GLM gratuitos não guardam nem treinam com o que é enviado; outros modelos gratuitos têm exceções. Confira antes de enviar dados sensíveis.</td></tr>
+    <tr><td>PDFs</td><td>MDPI, ScienceDirect, IOP e Wiley bloqueiam download por script; o script tenta as cópias em repositórios. No exemplo, 19 dos 38 artigos com PDF aberto foram lidos.</td></tr>
+    <tr><td>Números</td><td>Cada número do resumo traz a página. Confira no artigo antes de citar.</td></tr>
+    <tr><td>Busca na web</td><td>Se o agente ficar sem a busca na web, ele recorre às APIs do Crossref e do OpenAlex. Aconteceu numa das quatro frentes do exemplo.</td></tr>
+    <tr><td>Direitos autorais</td><td>Os PDFs e o texto integral ficam fora do repositório; só os resumos são publicados.</td></tr>
+  </table></div>
+</section>
+
+<footer>Victor Amaral · LAPIG/UFG · código sob licença MIT · feito com Claude Code e DeepSeek V4.1 Flash · <a href="https://github.com/VictorGit10/levantamento-ia">github.com/VictorGit10/levantamento-ia</a></footer>
+</body>
+</html>

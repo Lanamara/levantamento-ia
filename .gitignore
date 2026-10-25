@@ -1,0 +1,5 @@
+# Logs dos agentes e texto integral dos artigos (direitos autorais): não publicar.
+log.jsonl
+TEXTO.txt
+*.pdf
+__pycache__/
