@@ -26,6 +26,19 @@ def slug(autor, ano):
     return re.sub(r"[^a-z0-9]", "", nome) + str(ano or "")
 
 
+def nao_confere(texto, doi, titulo):
+    """Motivo para recusar o PDF, ou "" se ele é mesmo o artigo do DOI."""
+    if len(re.sub(r"\[página \d+\]|\s", "", texto)) < 2000:
+        return "PDF sem texto extraível (escaneado ou em branco)"
+    inicio = re.sub(r"\s+", " ", texto[:15000]).lower()
+    if doi.lower() in inicio.replace(" ", ""):
+        return ""
+    palavras = [p for p in re.findall(r"[a-zà-ú0-9]+", titulo.lower()) if len(p) > 3]
+    if palavras and sum(p in inicio for p in palavras) / len(palavras) >= 0.7:
+        return ""
+    return "o PDF não traz o DOI nem o título esperado (pode ser outro artigo)"
+
+
 def baixar(url):
     """urllib primeiro; se falhar ou não vier PDF, tenta o curl (alguns sites só aceitam ele)."""
     try:
@@ -75,6 +88,12 @@ def main():
             # PDF truncado ou corrompido: guarda à parte e segue com os outros.
             destino.replace(destino.with_suffix(".invalido"))
             falhas.append(f"{nome}: PDF ilegível ({type(e).__name__})")
+            continue
+        motivo = nao_confere(texto, r["doi"], r.get("titulo", ""))
+        if motivo:
+            # Link errado (outro artigo) ou PDF sem texto (escaneado): não resumir.
+            destino.replace(destino.with_suffix(".rejeitado"))
+            falhas.append(f"{nome}: {motivo}")
             continue
         pasta = resumos / nome
         pasta.mkdir(exist_ok=True)

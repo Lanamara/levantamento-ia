@@ -7,12 +7,17 @@ repetidos entre frentes (fica a linha mais completa) e copia o texto que vem
 depois da tabela. O .bib vem do próprio doi.org (Accept: application/x-bibtex).
 """
 import html
+import re
 import sys
 import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doi as doilib  # noqa: E402
+
+
+MESES = {"jan": "jan", "feb": "feb", "mar": "mar", "apr": "apr", "may": "may", "jun": "jun",
+         "jul": "jul", "aug": "aug", "sep": "sep", "oct": "oct", "nov": "nov", "dec": "dec"}
 
 
 def bibtex(doi):
@@ -23,6 +28,28 @@ def bibtex(doi):
         return html.unescape(urllib.request.urlopen(req, timeout=25).read().decode("utf-8").strip())
     except Exception as e:
         return f"% falhou: {doi} ({type(e).__name__})"
+
+
+def limpar_bib(entrada, chaves):
+    """Deixa a entrada válida para BibTeX/LaTeX: chave única, sem HTML, & e % escapados, mês padrão."""
+    m = re.match(r"(@\w+\{)([^,]+),", entrada)
+    if m:
+        base = chave = m.group(2).strip()
+        letra = ord("a")
+        while chave in chaves:
+            chave, letra = base + chr(letra), letra + 1
+        chaves.add(chave)
+        entrada = m.group(1) + chave + "," + entrada[m.end():]
+
+    def campo(c):
+        nome, valor = c.group(1), c.group(2)
+        if nome.lower() in ("doi", "url"):
+            return c.group(0)
+        valor = re.sub(r"<[^>]+>", "", valor)
+        valor = re.sub(r"(?<!\\)([&%#])", r"\\\1", valor)
+        return f"{nome}={{{valor}}}"
+    entrada = re.sub(r"(\w+)=\{((?:[^{}]|\{[^{}]*\})*)\}", campo, entrada)
+    return re.sub(r"month=(\w+)", lambda mm: "month=" + MESES.get(mm.group(1)[:3].lower(), mm.group(1)), entrada)
 
 
 def primeira_tabela(linhas):
@@ -72,7 +99,9 @@ def main():
             manter.append(l)
         texto += [f"## {nome}", "", cab, sep, *manter, "", *resto, ""]
     (saida / "REFERENCIAS.md").write_text("\n".join(texto), encoding="utf-8")
-    (saida / "referencias.bib").write_text("\n\n".join(bibtex(d) for d in dois) + "\n", encoding="utf-8")
+    chaves = set()
+    entradas = [limpar_bib(bibtex(d), chaves) for d in dois]
+    (saida / "referencias.bib").write_text("\n\n".join(entradas) + "\n", encoding="utf-8")
     print(f"{len(dois)} DOIs únicos -> {saida}")
 
 

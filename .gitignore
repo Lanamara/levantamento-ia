@@ -3,3 +3,5 @@ log.jsonl
 TEXTO.txt
 *.pdf
 __pycache__/
+*.invalido
+*.rejeitado

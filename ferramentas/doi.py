@@ -1,7 +1,7 @@
 """Extrai DOIs de texto. Aceita parênteses balanceados (ex.: 10.1016/S0034-4257(01)00302-9)."""
 import re
 
-_DOI = re.compile(r"10\.\d{4,9}/[^\s|\]>*\"']+")
+_DOI = re.compile(r"10\.\d{4,9}/[^\s|\]<>*\"']+")
 
 
 def limpar(doi):
