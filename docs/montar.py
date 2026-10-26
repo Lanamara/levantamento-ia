@@ -18,10 +18,16 @@ com_pdf = sum(1 for r in csv.DictReader(open(RAIZ / "exemplo" / "cienciometria.c
               if r.get("pdf") or r.get("pdf_alternativos"))
 # Resultado real da conferência (gerado por conferir_doi.py), não uma contagem.
 verif = list(csv.DictReader(open(RAIZ / "exemplo" / "verificacao.csv", encoding="utf-8-sig")))
-n_dois = len(verif)
-n_ok = sum(1 for v in verif if v["estado"] == "OK")
-n_conferir = sum(1 for v in verif if v["estado"] == "CONFERIR")
-assert n_ok + n_conferir == n_dois, "há DOI com erro ou inexistente: rode conferir_doi.py e veja"
+# Uma linha por indicação de frente; o mesmo DOI pode vir de mais de uma frente.
+estados = {}
+for v in verif:
+    estados.setdefault(v["doi"].lower(), set()).add(v["estado"])
+assert all(e <= {"OK", "CONFERIR"} for e in estados.values()), "há DOI com erro ou inexistente: rode conferir_doi.py e veja"
+assert len(estados) == len(linhas), "a conferência e a tabela não têm os mesmos DOIs"
+n_indicacoes = len(verif)
+n_repetidos = sum(1 for d in estados if sum(v["doi"].lower() == d for v in verif) > 1)
+n_ok = sum(1 for e in estados.values() if e == {"OK"})
+n_conferir = len(estados) - n_ok
 bases = painel.bases_sem_doi((RAIZ / "exemplo" / "REFERENCIAS.md").read_text(encoding="utf-8"))
 
 tabela = []
@@ -35,11 +41,11 @@ for l in linhas[:10]:
                   f'<td class="n">{l["percentil"]}</td><td>{ref}</td><td>{res}</td></tr>')
 
 pagina = (RAIZ / "docs" / "modelo.html").read_text(encoding="utf-8")
-for chave, valor in {"TABELA": "\n".join(tabela), "N_REFS": len(linhas), "N_DOIS": n_dois, "N_OK": n_ok,
+for chave, valor in {"TABELA": "\n".join(tabela), "N_REFS": len(linhas), "N_INDICACOES": n_indicacoes, "N_REPETIDOS": n_repetidos, "N_OK": n_ok,
                      "N_CONFERIR": n_conferir, "N_ABERTOS": abertos, "N_RESUMOS": resumos,
                      "N_PDF": com_pdf, "N_SEM_DOI": len(bases)}.items():
     pagina = pagina.replace("{{" + chave + "}}", str(valor))
 assert "{{" not in pagina, "sobrou marcador no modelo.html"
 (RAIZ / "docs" / "index.html").write_text(pagina, encoding="utf-8")
-print(f"index.html: {len(linhas)} artigos, {n_dois} DOIs citados, {abertos} abertos, "
+print(f"index.html: {len(linhas)} artigos, {n_indicacoes} indicações ({n_repetidos} repetidos), {abertos} abertos, "
       f"{resumos} resumos, {com_pdf} com PDF, {len(bases)} sem DOI")

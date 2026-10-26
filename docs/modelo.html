@@ -92,12 +92,14 @@ footer{max-width:980px;margin:0 auto;padding:24px 16px 48px;font-size:14px;color
 <section>
   <div class="num">LAPIG/UFG · outubro de 2026</div>
   <h1>Levantamento bibliográfico com agentes de IA gratuitos</h1>
-  <p class="lead">Um tema de pesquisa vira uma lista de referências conferidas, com dados de citação e um resumo de cada artigo aberto. Tudo com o opencode e o modelo DeepSeek V4.1 Flash gratuito, sem conta e sem assinatura.</p>
+  <p class="lead">Você descreve o tema da pesquisa. Agentes de IA buscam os artigos na web, scripts conferem se cada referência existe e juntam os dados de citação, e um agente lê por inteiro cada artigo de acesso aberto e escreve um resumo em que todo número vem com a página de onde saiu.</p>
+  <p>Um agente é um modelo de IA que pode usar ferramentas, como a busca na web e a gravação de arquivos, e trabalha sozinho até terminar o pedido. Aqui os agentes rodam no <a href="https://opencode.ai">opencode</a>, um programa de terminal, com o modelo DeepSeek V4.1 Flash, que é gratuito e não pede conta nem cartão.</p>
+  <p class="small">Números do exemplo desta página, feito em 25/10/2026 para um projeto de mestrado do LAPIG:</p>
   <div class="kpis">
-    <div class="kpi"><b>{{N_REFS}}</b><span>artigos com DOI no exemplo</span></div>
-    <div class="kpi"><b>{{N_OK}}/{{N_DOIS}}</b><span>DOIs com título idêntico no Crossref ({{N_CONFERIR}} conferido à mão: título traduzido)</span></div>
-    <div class="kpi"><b>{{N_ABERTOS}}</b><span>em acesso aberto</span></div>
-    <div class="kpi"><b>{{N_RESUMOS}}</b><span>lidos por inteiro e resumidos</span></div>
+    <div class="kpi"><b>{{N_REFS}}</b><span>artigos diferentes. As quatro buscas somaram {{N_INDICACOES}} indicações, mas {{N_REPETIDOS}} artigos apareceram em mais de uma.</span></div>
+    <div class="kpi"><b>{{N_REFS}} de {{N_REFS}}</b><span>DOIs existem e levam ao artigo citado. Em {{N_OK}}, o título bateu sozinho com o registro oficial; {{N_CONFERIR}}, com título em português e inglês, foi conferido à mão.</span></div>
+    <div class="kpi"><b>{{N_ABERTOS}}</b><span>artigos em acesso aberto.</span></div>
+    <div class="kpi"><b>{{N_RESUMOS}}</b><span>lidos por inteiro e resumidos: os que tinham PDF e cujo download automático funcionou (<a href="#limites">por que só esses</a>).</span></div>
   </div>
 </section>
 
@@ -105,30 +107,35 @@ footer{max-width:980px;margin:0 auto;padding:24px 16px 48px;font-size:14px;color
   <div class="num">Como funciona</div>
   <h2>Cinco etapas, cada uma conferível</h2>
   <ol class="fluxo">
-    <li><div class="n">1</div><div><b>Busca por frentes</b><span>O tema é dividido em 3 a 5 recortes. Cada recorte vira uma pasta com um pedido, e um agente faz a busca na web. Dois agentes por vez.</span></div></li>
-    <li><div class="n">2</div><div><b>Junção e conferência de DOI</b><span>As tabelas viram uma só, sem repetidos. Cada DOI é consultado no Crossref e o título é comparado. O arquivo .bib sai do próprio doi.org.</span></div></li>
-    <li><div class="n">3</div><div><b>Cienciometria</b><span>O OpenAlex devolve, para cada artigo: citações, FWCI (citações normalizadas por área e ano), percentil e se o texto é aberto.</span></div></li>
-    <li><div class="n">4</div><div><b>Leitura integral</b><span>Os PDFs abertos são baixados e o texto é extraído com a página marcada. Um agente lê o artigo inteiro e escreve um resumo fixo, com a página de cada número.</span></div></li>
-    <li><div class="n">5</div><div><b>Tabela final</b><span>Tudo junto, ordenado por citações, com link para o resumo de cada artigo lido.</span></div></li>
+    <li><div class="n">1</div><div><b>Divisão em frentes</b><span>O tema é dividido em 3 a 5 recortes mais estreitos, que chamamos de frentes. Cada frente vira uma pasta com um pedido escrito, e um agente faz a busca na web. Dois agentes rodam ao mesmo tempo.</span></div></li>
+    <li><div class="n">2</div><div><b>Junção e conferência do DOI</b><span>As tabelas das frentes viram uma só, sem repetições. Um script consulta cada DOI no Crossref, onde as editoras registram os DOIs, e compara o título registrado com o que o agente escreveu. O arquivo .bib, para Zotero e Mendeley, vem do próprio doi.org, e não do agente.</span></div></li>
+    <li><div class="n">3</div><div><b>Dados de citação</b><span>O OpenAlex, uma base aberta de publicações científicas, informa quantas citações cada artigo tem, como ele se compara aos artigos da mesma área e ano e se o texto é aberto.</span></div></li>
+    <li><div class="n">4</div><div><b>Leitura integral</b><span>O script baixa os PDFs abertos, confere se cada PDF é mesmo o artigo do DOI e extrai o texto com a página marcada. Um agente lê o artigo inteiro e escreve o resumo.</span></div></li>
+    <li><div class="n">5</div><div><b>Tabela final</b><span>Todos os artigos, ordenados por citações, com link para o resumo dos que foram lidos.</span></div></li>
   </ol>
-  <div class="box"><p style="margin:0"><b>Por que frentes:</b> um agente com um tema amplo se perde e repete os mesmos artigos. Com recortes estreitos, cada um vai mais fundo no seu pedaço. <b>Por que conferir o DOI:</b> modelos de linguagem inventam referências com aparência perfeita.</p></div>
+  <div class="box">
+    <p><b>Por que dividir o tema.</b> Cada agente faz no máximo cerca de 25 buscas. Num tema amplo, essas buscas se espalham e tendem a voltar com os artigos mais conhecidos. Num recorte estreito, como "radar e LiDAR em plantios florestais", as mesmas buscas vão mais fundo. No exemplo, só {{N_REPETIDOS}} dos {{N_REFS}} artigos apareceram em mais de uma frente.</p>
+    <p style="margin:0"><b>Por que conferir o DOI.</b> Modelos de linguagem às vezes citam artigos que não existem, ou põem o DOI de um artigo ao lado do título de outro. A referência inventada tem autores, revista e ano plausíveis, e só a consulta ao registro oficial mostra o erro.</p>
+  </div>
 </section>
 
 <section id="exemplo">
   <div class="num">Exemplo real</div>
   <h2>Biomassa e carbono da silvicultura em Goiás</h2>
-  <p>Quatro frentes: sensores ópticos, radar e LiDAR, fusão de sensores com aprendizado de máquina, e dados de Goiás e do Cerrado. As 10 referências mais citadas:</p>
+  <p>O tema era o de um projeto de mestrado: estimar a biomassa e o estoque de carbono dos plantios florestais de Goiás (eucalipto e pinus) com dados de vários tipos de sensor de satélite. Ele foi dividido em quatro frentes: sensores ópticos, como Sentinel-2 e Landsat; radar e LiDAR; combinação de sensores com aprendizado de máquina; e dados de Goiás e do Cerrado. As quatro buscas levaram cerca de 10 minutos, e os {{N_RESUMOS}} resumos, cerca de 12.</p>
+  <p>Abaixo, os 10 artigos mais citados. Os três números vêm do OpenAlex. O FWCI compara as citações do artigo com a média dos artigos da mesma área e ano: 1 é a média, e 10 é dez vezes a média. Percentil 99 quer dizer que o artigo está entre os 1% mais citados da sua área e ano.</p>
   <div class="tablewrap"><table>
     <tr><th class="n">Citações</th><th class="n">FWCI</th><th class="n">Percentil</th><th>Referência</th><th>Resumo</th></tr>
 {{TABELA}}
   </table></div>
-  <p class="small" style="margin-top:8px">A lista completa, com os {{N_REFS}} artigos, está em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/REFERENCIAS.md">REFERENCIAS.md</a>; ordenada por citação, em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md">exemplo/TABELA.md</a>, que também lista as {{N_SEM_DOI}} bases e relatórios <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md#bases-e-relatórios-sem-doi">sem DOI</a>. O arquivo <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/referencias.bib">referencias.bib</a> importa no Zotero e no Mendeley.</p>
-  <div class="box"><p style="margin:0"><b>O achado que se repetiu nas quatro frentes:</b> não há trabalho publicado sobre biomassa ou carbono da silvicultura em Goiás. O único estudo goiano encontrado mapeia a área plantada (Cabral et al., 2019). É a lacuna que o projeto ocupa.</p></div>
+  <p class="small" style="margin-top:8px">A lista dos {{N_REFS}} artigos, separada por frente e com o que cada frente concluiu, está em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/REFERENCIAS.md">REFERENCIAS.md</a>. A mesma lista ordenada por citações está em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md">TABELA.md</a>, que também traz, no fim, {{N_SEM_DOI}} <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md#bases-e-relatórios-sem-doi">bases e relatórios oficiais sem DOI</a> (IBGE, Ibá, MapBiomas e Embrapa). O arquivo <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/referencias.bib">referencias.bib</a> importa direto no Zotero e no Mendeley.</p>
+  <div class="box"><p style="margin:0"><b>O que a busca mostrou sobre Goiás.</b> Entre os {{N_REFS}} artigos, só um trata da silvicultura em Goiás, e ele mapeia a área plantada, sem estimar biomassa (Cabral et al., 2019). O estudo de carbono em eucalipto mais perto daqui foi feito no Distrito Federal (Ribeiro et al., 2023). Quatro buscas automáticas não provam que nenhum estudo existe, mas indicam que estimar a biomassa e o carbono dos plantios goianos é um tema pouco explorado. É exatamente o tema do projeto.</p></div>
 </section>
 
 <section id="resumo">
   <div class="num">Um resumo, como sai</div>
   <h2>Aló et al. (2024), <i>Annals of Forest Science</i></h2>
+  <p>Cada artigo lido gera um resumo com oito partes fixas: referência, pergunta do estudo, área e dados, método, resultados, limitações que os autores reconhecem, o que serve e o que não serve ao projeto, e duas frases copiadas literalmente do artigo. Todo número vem com a página entre colchetes, para conferir. Este é um trecho de um deles, sobre volume de madeira em eucalipto no Mato Grosso do Sul:</p>
   <div class="resumo">
     <h3>Resultados principais (trecho)</h3>
     <ul>
@@ -142,39 +149,53 @@ footer{max-width:980px;margin:0 auto;padding:24px 16px 48px;font-size:14px;color
       <li>Calibrado no Mato Grosso do Sul, só com sensores ópticos [p. 3, p. 4]</li>
     </ul>
   </div>
-  <p class="small" style="margin-top:8px">Os números e as citações deste resumo foram conferidos no texto do artigo. <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/alo2024/RELATORIO.md">Resumo completo</a>.</p>
+  <p class="small" style="margin-top:8px">Conferimos no PDF do artigo os números deste trecho. <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/resumos/alo2024/RELATORIO.md">Resumo completo</a>.</p>
 </section>
 
 <section id="usar">
   <div class="num">Como usar</div>
   <h2>Num computador comum</h2>
-<pre>npm install -g @opencode/cli
+  <p>Precisa de <a href="https://nodejs.org">Node.js</a>, para instalar o opencode, e de Python 3. Os comandos, na ordem:</p>
+<pre># instalar o opencode, a biblioteca de PDF e baixar as ferramentas
+npm install -g @opencode/cli
 pip install pypdf
 git clone https://github.com/VictorGit10/levantamento-ia
 cd levantamento-ia
 
-# 1. crie meu-tema/frentes/&lt;recorte&gt;/PEDIDO.md a partir de modelos/PEDIDO-busca.md
+# 1. crie uma pasta por frente, cada uma com um PEDIDO.md
+#    feito a partir de modelos/PEDIDO-busca.md
+#    (ex.: meu-tema/frentes/1-optico/PEDIDO.md)
+
+# 2. busca: um agente por frente, dois de cada vez
 python ferramentas/orquestrar.py meu-tema/frentes --paralelo 2
+
+# 3. junta as tabelas, gera o .bib e confere os DOIs
 python ferramentas/juntar.py meu-tema/frentes meu-tema "Título do tema"
 python ferramentas/conferir_doi.py meu-tema/frentes
+
+# 4. citações e acesso aberto (OpenAlex)
 python ferramentas/cienciometria.py meu-tema/referencias.bib meu-tema/cienciometria.csv
+
+# 5. baixa os PDFs abertos e um agente resume cada artigo
 python ferramentas/preparar_resumos.py meu-tema/cienciometria.csv pdfs meu-tema/resumos modelos/PEDIDO-resumo.md "Título do tema"
 python ferramentas/orquestrar.py meu-tema/resumos --paralelo 2
+
+# 6. tabela final
 python ferramentas/painel.py meu-tema</pre>
-  <div class="box"><p style="margin:0"><b>Ou peça à sua IA.</b> Um assistente com acesso ao terminal (Claude Code, Codex, opencode) faz tudo isso a partir do tema: “clone este repositório, divida o meu tema em 4 frentes e rode o levantamento completo”.</p></div>
+  <div class="box"><p style="margin:0"><b>Ou peça à sua IA.</b> Um assistente com acesso ao terminal, como Claude Code, Codex ou o próprio opencode, faz tudo isso a partir do tema. Por exemplo: "clone este repositório, divida o meu tema em 4 frentes e rode o levantamento completo".</p></div>
 </section>
 
 <section id="limites">
   <div class="num">Limites</div>
-  <h2>O que conferir antes de usar</h2>
+  <h2>O que saber antes de usar</h2>
   <div class="tablewrap"><table>
     <tr><th>Ponto</th><th>Na prática</th></tr>
-    <tr><td>Limite gratuito</td><td>Por conexão de internet, somado entre os modelos gratuitos. Dois agentes por vez funcionam; cinco estouram em minutos. Por dia, cerca de 200 chamadas: deu para as 4 frentes e os 19 resumos do exemplo. Rodando de novo no dia seguinte, o orquestrador continua de onde parou.</td></tr>
-    <tr><td>Privacidade</td><td>Segundo a <a href="https://opencode.ai/docs/zen/">documentação do opencode</a> (25/10/2026), DeepSeek e GLM gratuitos não guardam nem treinam com o que é enviado; outros modelos gratuitos têm exceções. Confira antes de enviar dados sensíveis.</td></tr>
-    <tr><td>PDFs</td><td>MDPI, ScienceDirect, IOP e Wiley bloqueiam download por script; o script tenta as cópias em repositórios. No exemplo, {{N_RESUMOS}} dos {{N_PDF}} artigos com PDF aberto foram lidos.</td></tr>
-    <tr><td>Números</td><td>Cada número do resumo traz a página. Confira no artigo antes de citar.</td></tr>
-    <tr><td>Busca na web</td><td>Se o agente ficar sem a busca na web, ele recorre às APIs do Crossref e do OpenAlex. Aconteceu numa das quatro frentes do exemplo.</td></tr>
-    <tr><td>Direitos autorais</td><td>Os PDFs e o texto integral ficam fora do repositório; só os resumos são publicados.</td></tr>
+    <tr><td>Limite gratuito</td><td>O limite é por conexão de internet e vale para todos os modelos gratuitos juntos. Dois agentes ao mesmo tempo funcionam; cinco esgotam o limite em minutos. Em um dia, ele acabou depois de cerca de 200 chamadas ao modelo, o que deu para as 4 buscas e os {{N_RESUMOS}} resumos do exemplo. Se acabar no meio, rode de novo no dia seguinte: o que já terminou é pulado.</td></tr>
+    <tr><td>PDFs</td><td>Dos {{N_ABERTOS}} artigos abertos, {{N_PDF}} tinham link de PDF no OpenAlex, e o download automático funcionou em {{N_RESUMOS}}. Nos outros, o site não entregou o PDF ao script, nem as cópias em repositórios institucionais que ele também tenta. Em 12 desses casos o artigo era da MDPI, que devolve uma página de verificação no lugar do PDF. Quem baixar esses artigos à mão pode resumi-los com o mesmo pedido.</td></tr>
+    <tr><td>Números dos resumos</td><td>Cada número traz a página. Confira no artigo antes de citar, porque o agente pode ler errado uma tabela ou um gráfico.</td></tr>
+    <tr><td>Privacidade</td><td>Segundo a <a href="https://opencode.ai/docs/zen/">documentação do opencode</a> (consultada em 25/10/2026), o DeepSeek e o GLM gratuitos não guardam nem usam para treino o que é enviado. Outros modelos gratuitos têm exceções. Confira antes de enviar dados sensíveis.</td></tr>
+    <tr><td>Busca na web</td><td>Numa das quatro frentes, o agente ficou sem a busca na web e consultou direto o Crossref e o OpenAlex. O resultado foi aproveitável, e o orquestrador avisa quando isso acontece.</td></tr>
+    <tr><td>Direitos autorais</td><td>Os PDFs e o texto integral ficam fora do repositório. Só os resumos são publicados.</td></tr>
   </table></div>
 </section>
 

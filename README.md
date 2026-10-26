@@ -19,8 +19,9 @@ Um tema de pesquisa vira uma lista de referências conferidas, com dados de cita
 Tema: *sensoriamento remoto multissensorial aplicado à estimativa de biomassa e carbono da silvicultura em Goiás*. Pasta [`exemplo/`](exemplo/).
 
 - 4 frentes (sensores ópticos, radar e LiDAR, fusão com aprendizado de máquina, dados de Goiás), 2 agentes por vez, cerca de 10 minutos.
-- 49 artigos únicos com DOI, mais 4 bases oficiais sem DOI (IBGE, Ibá, MapBiomas, Embrapa). Os 56 DOIs citados nas frentes existem no Crossref.
-- 47 dos 49 artigos estão em acesso aberto. 19 foram lidos por inteiro e resumidos, em cerca de 12 minutos: [`exemplo/resumos/`](exemplo/resumos/).
+- 49 artigos diferentes com DOI, mais 4 bases oficiais sem DOI (IBGE, Ibá, MapBiomas, Embrapa). As frentes somaram 56 indicações porque 5 artigos apareceram em duas ou três delas. Os 49 DOIs existem no Crossref; em 48 o título bateu sozinho, e 1 (título bilíngue) foi conferido à mão.
+- Dos 47 artigos abertos, 38 tinham link de PDF e o download automático funcionou em 19 (12 dos que falharam são da MDPI, que bloqueia download por script).
+- Esses 19 foram lidos por inteiro e resumidos, em cerca de 12 minutos: [`exemplo/resumos/`](exemplo/resumos/).
 - Na frente de radar e LiDAR o agente ficou sem a busca na web e buscou direto nas APIs do Crossref e do OpenAlex; o resultado tem a mesma qualidade.
 - Comece por [`exemplo/TABELA.md`](exemplo/TABELA.md).
 
