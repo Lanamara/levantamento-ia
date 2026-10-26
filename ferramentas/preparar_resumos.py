@@ -8,6 +8,7 @@ extrai o texto com a página marcada e cria <pasta-resumos>/<autor-ano>/ com
 TEXTO.txt e PEDIDO.md. Depois rode o orquestrar.py nessa pasta.
 Os PDFs ficam fora do repositório (direitos autorais); só os resumos são publicados.
 """
+import argparse
 import csv
 import datetime
 import re
@@ -56,8 +57,15 @@ def baixar(url):
     return dados if dados.startswith(b"%PDF") else None
 
 
-def main():
-    csv_ref, pdfs, resumos, modelo, tema = sys.argv[1:6]
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Baixa os PDFs abertos e prepara uma pasta de resumo por artigo.")
+    ap.add_argument("cienciometria", help="CSV gerado por cienciometria.py")
+    ap.add_argument("pdfs", help="pasta para os PDFs baixados")
+    ap.add_argument("resumos", help="pasta das frentes de resumo")
+    ap.add_argument("modelo", help="modelo de PEDIDO.md")
+    ap.add_argument("tema", help="título do tema")
+    a = ap.parse_args(argv)
+    csv_ref, pdfs, resumos, modelo, tema = (a.cienciometria, a.pdfs, a.resumos, a.modelo, a.tema)
     pdfs, resumos = Path(pdfs), Path(resumos)
     pdfs.mkdir(parents=True, exist_ok=True)
     resumos.mkdir(parents=True, exist_ok=True)
@@ -106,4 +114,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

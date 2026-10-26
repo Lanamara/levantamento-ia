@@ -1,15 +1,15 @@
 # Referências por citação
 
-Fonte: OpenAlex. FWCI = citações normalizadas por área e ano (1 = média mundial). Percentil = posição do artigo entre os da mesma área e ano (99 = entre os 1% mais citados). Autor e ano como no registro do DOI.
+Fonte: OpenAlex. FWCI = citações normalizadas por área e ano (1 = média mundial). Percentil = posição do artigo entre os da mesma área e ano (99 = entre os 1% mais citados). Autores e ano como no registro do DOI.
 
-| Citações | FWCI | Percentil | Autor (ano) | Título | Revista | Acesso | Resumo |
+| Citações | FWCI | Percentil | Autores (ano) | Título | Revista | Acesso | Resumo |
 |---:|---:|---:|---|---|---|---|---|
 | 715 | 58.28 | 99 | Lang et al. (2023) | [A high-resolution canopy height model of the Earth](https://doi.org/10.1038/s41559-023-02206-6) | Nature Ecology & Evolution | aberto (híbrido) | [ler](resumos/lang2023/RELATORIO.md) |
 | 489 | 26.49 | 99 | Duncanson et al. (2022) | [Aboveground biomass density models for NASA’s Global Ecosystem Dynamics Investigation (GEDI) lidar mission](https://doi.org/10.1016/j.rse.2021.112845) | Remote Sensing of Environment | aberto (híbrido) | [ler](resumos/duncanson2022/RELATORIO.md) |
 | 402 | 20.58 | 99 | Santoro et al. (2021) | [The global forest above-ground biomass pool for 2010 estimated from high-resolution satellite observations](https://doi.org/10.5194/essd-13-3927-2021) | Earth system science data | aberto (revista) | [ler](resumos/santoro2021/RELATORIO.md) |
 | 358 | 24.68 | 99 | Quegan et al. (2019) | [The European Space Agency BIOMASS mission: Measuring forest above-ground biomass from space](https://doi.org/10.1016/j.rse.2019.03.032) | Remote Sensing of Environment | aberto (repositório) | [ler](resumos/quegan2019/RELATORIO.md) |
 | 255 | 14.73 | 99 | Dubayah et al. (2022) | [GEDI launches a new era of biomass inference from space](https://doi.org/10.1088/1748-9326/ac8694) | Environmental Research Letters | aberto (revista) | [ler](resumos/dubayah2022/RELATORIO.md) (preprint) |
-| 244 | 10.36 | 99 | Neuenschwander et al. (2019) | [Canopy and Terrain Height Retrievals with ICESat-2: A First Look](https://doi.org/10.3390/rs11141721) | Remote Sensing | aberto (revista) |  |
+| 244 | 10.36 | 99 | Neuenschwander & Magruder (2019) | [Canopy and Terrain Height Retrievals with ICESat-2: A First Look](https://doi.org/10.3390/rs11141721) | Remote Sensing | aberto (revista) |  |
 | 232 | 8.92 | 98 | Silva et al. (2021) | [Fusing simulated GEDI, ICESat-2 and NISAR data for regional aboveground biomass mapping](https://doi.org/10.1016/j.rse.2020.112234) | Remote Sensing of Environment | aberto (híbrido) |  |
 | 155 | 8.33 | 99 | Araza et al. (2022) | [A comprehensive framework for assessing the accuracy and uncertainty of global above-ground biomass maps](https://doi.org/10.1016/j.rse.2022.112917) | Remote Sensing of Environment | aberto (híbrido) | [ler](resumos/araza2022/RELATORIO.md) |
 | 117 | 9.64 | 99 | Beloiu et al. (2023) | [Individual Tree-Crown Detection and Species Identification in Heterogeneous Forests Using Aerial RGB Imagery and Deep Learning](https://doi.org/10.3390/rs15051463) | Remote Sensing | aberto (revista) | [ler](resumos/beloiu2023/RELATORIO.md) |
@@ -23,7 +23,7 @@ Fonte: OpenAlex. FWCI = citações normalizadas por área e ano (1 = média mund
 | 28 | 1.68 | 81 | Theofanous et al. (2021) | [Aboveground Biomass Estimation in Short Rotation Forest Plantations in Northern Greece Using ESA’s Sentinel Medium-High Resolution Multispectral and Radar Imaging Missions](https://doi.org/10.3390/f12070902) | Forests | aberto (revista) |  |
 | 21 | 5.82 | 97 | Weber et al. (2025) | [Unified Deep Learning Model for Global Prediction of Aboveground Biomass, Canopy Height, and Cover from High-Resolution, Multi-Sensor Satellite Imagery](https://doi.org/10.3390/rs17091594) | Remote Sensing | aberto (revista) | [ler](resumos/weber2025/RELATORIO.md) (preprint) |
 | 19 | 2.23 | 87 | Yan et al. (2024) | [Forest Aboveground Biomass Estimation Based on Unmanned Aerial Vehicle–Light Detection and Ranging and Machine Learning](https://doi.org/10.3390/s24217071) | Sensors | aberto (revista) |  |
-| 18 | 1.49 | 78 | Zhou et al. (2023) | [Estimation of Forest Stock Volume Using Sentinel-2 MSI, Landsat 8 OLI Imagery and Forest Inventory Data](https://doi.org/10.3390/f14071345) | Forests | aberto (revista) |  |
+| 18 | 1.49 | 78 | Zhou & Feng (2023) | [Estimation of Forest Stock Volume Using Sentinel-2 MSI, Landsat 8 OLI Imagery and Forest Inventory Data](https://doi.org/10.3390/f14071345) | Forests | aberto (revista) |  |
 | 17 | 1.99 | 85 | Faria et al. (2024) | [Biomass Prediction Using Sentinel-2 Imagery and an Artificial Neural Network in the Amazon/Cerrado Transition Region](https://doi.org/10.3390/f15091599) | Forests | aberto (revista) |  |
 | 14 | 1.15 | 73 | Liu et al. (2023) | [Individual Tree Aboveground Biomass Estimation Based on UAV Stereo Images in a Eucalyptus Plantation](https://doi.org/10.3390/f14091748) | Forests | aberto (revista) |  |
 | 13 | 2.27 | 87 | Ribeiro et al. (2023) | [Carbon Storage in Different Compartments in Eucalyptus Stands and Native Cerrado Vegetation](https://doi.org/10.3390/plants12142751) | Plants | aberto (revista) | [ler](resumos/ribeiro2023/RELATORIO.md) |
@@ -32,12 +32,12 @@ Fonte: OpenAlex. FWCI = citações normalizadas por área e ano (1 = média mund
 | 11 | 0.82 | 64 | Li et al. (2022) | [Research on Accurate Estimation Method of Eucalyptus Biomass Based on Airborne LiDAR Data and Aerial Images](https://doi.org/10.3390/su141710576) | Sustainability | aberto (revista) |  |
 | 10 | 2.77 | 90 | Xu et al. (2025) | [Estimation of Forest Aboveground Biomass Using Sentinel-1/2 Synergized with Extrapolated Parameters from LiDAR Data and Analysis of Its Ecological Driving Factors](https://doi.org/10.3390/rs17142358) | Remote Sensing | aberto (revista) |  |
 | 8 | 2.22 | 87 | Yang et al. (2025) | [Mapping above-ground biomass and canopy mean height in high mountainous forest areas with Sentinel-2 multi-spectral image based on machine learning algorithms](https://doi.org/10.1080/17538947.2025.2558924) | International Journal of Digital Earth | aberto (revista) |  |
-| 7 | 1.22 | 73 | Persson et al. (2024) | [Polarimetric Measures in Biomass Change Prediction Using ALOS-2 PALSAR-2 Data](https://doi.org/10.3390/rs16060953) | Remote Sensing | aberto (revista) |  |
+| 7 | 1.22 | 73 | Persson & Huuva (2024) | [Polarimetric Measures in Biomass Change Prediction Using ALOS-2 PALSAR-2 Data](https://doi.org/10.3390/rs16060953) | Remote Sensing | aberto (revista) |  |
 | 7 | 0.62 | 65 | Valadão et al. (2020) | [Modeling Biomass and Nutrients in a Eucalyptus Stand in the Cerrado](https://doi.org/10.3390/f11101097) | Forests | aberto (revista) |  |
 | 7 | 0.82 | 66 | Pinedo et al. (2025) | [Estimation of height and aerial biomass in Eucalyptus globulus plantations using UAV-LiDAR](https://doi.org/10.1016/j.tfp.2024.100763) | Trees Forests and People | aberto (revista) |  |
 | 6 | 0.07 | 31 | Chinembiri et al. (2022) | [Landsat-8 and Sentinel-2 Based Prediction of Forest Plantation C Stock Using Spatially Varying Coefficient Bayesian Hierarchical Models](https://doi.org/10.3390/rs14225676) | Remote Sensing | aberto (revista) |  |
 | 6 | 0.7 | 62 | Rajab Pourrahmati et al. (2024) | [Integration of very high-resolution stereo satellite images and airborne or satellite Lidar for Eucalyptus canopy height estimation](https://doi.org/10.1016/j.srs.2024.100170) | Science of Remote Sensing | aberto (revista) |  |
-| 5 | 1.46 | 78 | Saim et al. (2025) | [Machine Learning and Multisensor Data Fusion for Forest above Ground Biomass Estimation in Arkansas](https://doi.org/10.1007/s41748-025-00713-z) | Earth Systems and Environment | aberto (híbrido) | [ler](resumos/saim2025/RELATORIO.md) |
+| 5 | 1.46 | 78 | Saim & Aly (2025) | [Machine Learning and Multisensor Data Fusion for Forest above Ground Biomass Estimation in Arkansas](https://doi.org/10.1007/s41748-025-00713-z) | Earth Systems and Environment | aberto (híbrido) | [ler](resumos/saim2025/RELATORIO.md) |
 | 4 | 0.34 | 48 | Pertille et al. (2023) | [Estimating the commercial volume of a Pinus taeda L. plantation using active and passive sensors](https://doi.org/10.1590/01047760202329013108) | CERNE | aberto (sem taxa) | [ler](resumos/pertille2023/RELATORIO.md) |
 | 4 | 0.47 | 54 | OLIVEIRA et al. (2024) | [Artificial Neural Network and Remote Sensing combined to predict the Aboveground Biomass in the Cerrado biome](https://doi.org/10.1590/0001-3765202420221041) | Anais da Academia Brasileira de Ciências | aberto (sem taxa) |  |
 | 3 | 0.0 | 3 | Carneiro et al. (2020) | [Multi-source remote sensing data improves the classification accuracy of natural forests and eucalyptus plantations](https://doi.org/10.14393/rbcv72n1-50477) | Revista Brasileira de Cartografia | aberto (sem taxa) | [ler](resumos/carneiro2020/RELATORIO.md) |
@@ -53,3 +53,12 @@ Fonte: OpenAlex. FWCI = citações normalizadas por área e ano (1 = média mund
 | 1 | 0.3 | 52 | Ribeiro et al. (2024) | [Individual Carbon Modeling in Eucalyptus Stands in the Cerrado Region](https://doi.org/10.3390/f15081332) | Forests | aberto (revista) |  |
 | 1 | 0.12 | 35 | de Souza Diniz et al. (2023) | [Estimating stem volume of Eucalyptus sp. and Pinus sp. plantations in Brazil, using Sentinel-1B and ALOS-2/PALSAR-2 data](https://doi.org/10.1117/1.jrs.17.014513) | Journal of Applied Remote Sensing | fechado |  |
 | 0 | 0.0 | 3 | Grings et al. (2025) | [Validation of GEDI above ground biomass product over Pinus sp. plantations in Argentina](https://doi.org/10.1117/1.jrs.19.024502) | Journal of Applied Remote Sensing | fechado |  |
+
+## Bases e relatórios sem DOI
+
+| Autor (ano) | Título | Link |
+|---|---|---|
+| IBGE (2026) | Produção da Extração Vegetal e da Silvicultura – PEVS 2025 | https://sidra.ibge.gov.br/tabela/5930 |
+| IBÁ (2024) | Relatório Anual 2024 (Indústria Brasileira de Árvores) | https://iba.org/wp-content/uploads/2025/05/relatorio2024.pdf |
+| MapBiomas (2025) | Coleção 10 do mapeamento anual de cobertura e uso da terra (1985–2024) | https://plataforma.brasil.mapbiomas.org/cobertura |
+| Reis et al. (2024) | Diagnóstico da produção de eucalipto no Distrito Federal e em Goiás | https://www.infoteca.cnptia.embrapa.br/infoteca/handle/doc/1169661 |

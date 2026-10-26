@@ -122,7 +122,7 @@ footer{max-width:980px;margin:0 auto;padding:24px 16px 48px;font-size:14px;color
     <tr><th class="n">Citações</th><th class="n">FWCI</th><th class="n">Percentil</th><th>Referência</th><th>Resumo</th></tr>
 {{TABELA}}
   </table></div>
-  <p class="small" style="margin-top:8px">A lista completa, com os {{N_REFS}} artigos e as 4 bases oficiais sem DOI, está em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/REFERENCIAS.md">REFERENCIAS.md</a>; ordenada por citação, em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md">exemplo/TABELA.md</a>. O arquivo <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/referencias.bib">referencias.bib</a> importa no Zotero e no Mendeley.</p>
+  <p class="small" style="margin-top:8px">A lista completa, com os {{N_REFS}} artigos, está em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/REFERENCIAS.md">REFERENCIAS.md</a>; ordenada por citação, em <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md">exemplo/TABELA.md</a>, que também lista as {{N_SEM_DOI}} bases e relatórios <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/TABELA.md#bases-e-relatórios-sem-doi">sem DOI</a>. O arquivo <a href="https://github.com/VictorGit10/levantamento-ia/blob/main/exemplo/referencias.bib">referencias.bib</a> importa no Zotero e no Mendeley.</p>
   <div class="box"><p style="margin:0"><b>O achado que se repetiu nas quatro frentes:</b> não há trabalho publicado sobre biomassa ou carbono da silvicultura em Goiás. O único estudo goiano encontrado mapeia a área plantada (Cabral et al., 2019). É a lacuna que o projeto ocupa.</p></div>
 </section>
 
@@ -169,7 +169,7 @@ python ferramentas/painel.py meu-tema</pre>
   <h2>O que conferir antes de usar</h2>
   <div class="tablewrap"><table>
     <tr><th>Ponto</th><th>Na prática</th></tr>
-    <tr><td>Limite gratuito</td><td>Por conexão de internet. Dois agentes por vez funcionam; cinco estouram em minutos.</td></tr>
+    <tr><td>Limite gratuito</td><td>Por conexão de internet, somado entre os modelos gratuitos. Dois agentes por vez funcionam; cinco estouram em minutos. Por dia, cerca de 200 chamadas: deu para as 4 frentes e os 19 resumos do exemplo. Rodando de novo no dia seguinte, o orquestrador continua de onde parou.</td></tr>
     <tr><td>Privacidade</td><td>Segundo a <a href="https://opencode.ai/docs/zen/">documentação do opencode</a> (25/10/2026), DeepSeek e GLM gratuitos não guardam nem treinam com o que é enviado; outros modelos gratuitos têm exceções. Confira antes de enviar dados sensíveis.</td></tr>
     <tr><td>PDFs</td><td>MDPI, ScienceDirect, IOP e Wiley bloqueiam download por script; o script tenta as cópias em repositórios. No exemplo, {{N_RESUMOS}} dos {{N_PDF}} artigos com PDF aberto foram lidos.</td></tr>
     <tr><td>Números</td><td>Cada número do resumo traz a página. Confira no artigo antes de citar.</td></tr>

@@ -6,6 +6,7 @@ Saída, uma linha por DOI: OK (título igual), CONFERIR (parecido, ver à mão),
 TITULO-DIFERE, NAO-EXISTE (o Crossref respondeu 404) ou ERRO (rede, depois de
 3 tentativas). Grava também <pasta>/../verificacao.csv, que o site usa.
 """
+import argparse
 import csv
 import html
 import json
@@ -48,8 +49,11 @@ def consultar(doi, titulo):
     return "ERRO", 0.0, ""
 
 
-def main():
-    raiz = Path(sys.argv[1])
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Confere no Crossref os DOIs citados nos RELATORIO.md.")
+    ap.add_argument("raiz", help="pasta com uma subpasta por frente")
+    a = ap.parse_args(argv)
+    raiz = Path(a.raiz)
     contagem, linhas = Counter(), []
     for rel in sorted(raiz.glob("*/RELATORIO.md")):
         for linha in rel.read_text(encoding="utf-8").splitlines():
@@ -73,4 +77,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

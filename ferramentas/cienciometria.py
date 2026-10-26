@@ -5,7 +5,10 @@ Uso: python cienciometria.py <referencias.bib> <saida.csv> [seu-email]
 Para cada DOI do .bib: ano, primeiro autor, revista, citações, FWCI (citações
 normalizadas pela área e ano; 1 = média), percentil de citação, status de acesso
 aberto e links do PDF aberto (do editor e de repositórios), quando existem.
+DOI que falhar no OpenAlex fica fora do CSV principal e vai para
+<saida>-falhas.csv, com as colunas doi e erro.
 """
+import argparse
 import csv
 import json
 import re
@@ -13,6 +16,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+from pathlib import Path
 
 CAMPOS = ["doi", "ano", "primeiro_autor", "titulo", "revista", "citacoes", "fwci",
           "percentil", "acesso", "pdf", "pdf_alternativos"]
@@ -43,26 +47,39 @@ def consulta(doi, email):
     }
 
 
-def main():
-    bib, saida = sys.argv[1], sys.argv[2]
-    email = sys.argv[3] if len(sys.argv) > 3 else ""
-    dois = re.findall(r"DOI\s*=\s*\{([^}]+)\}", open(bib, encoding="utf-8").read(), re.I)
-    linhas = []
+def main(argv=None):
+    ap = argparse.ArgumentParser(description="Busca citações, FWCI, percentil e acesso aberto no OpenAlex.")
+    ap.add_argument("bib", help="referencias.bib")
+    ap.add_argument("saida", help="CSV de saída (ex.: cienciometria.csv)")
+    ap.add_argument("email", nargs="?", default="", help="e-mail para o mailto do OpenAlex (opcional)")
+    a = ap.parse_args(argv)
+    saida = Path(a.saida)
+    dois = re.findall(r"DOI\s*=\s*\{([^}]+)\}", Path(a.bib).read_text(encoding="utf-8-sig"), re.I)
+    linhas, falhas = [], []
     for doi in dois:
         try:
-            linhas.append(consulta(doi, email))
+            linhas.append(consulta(doi, a.email))
         except Exception as e:
-            linhas.append({"doi": doi, "titulo": f"(não achado no OpenAlex: {type(e).__name__})"})
+            falhas.append({"doi": doi, "erro": f"{type(e).__name__}: {e}"})
         time.sleep(0.2)
     linhas.sort(key=lambda r: -(r.get("citacoes") or 0))
     with open(saida, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=CAMPOS)
         w.writeheader()
         w.writerows(linhas)
+    falhas_path = saida.with_name(saida.stem + "-falhas.csv")
+    if falhas:
+        with open(falhas_path, "w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=["doi", "erro"])
+            w.writeheader()
+            w.writerows(falhas)
+    elif falhas_path.exists():
+        falhas_path.unlink()
     abertos = sum(1 for r in linhas if r.get("acesso") and r["acesso"] != "closed")
     com_pdf = sum(1 for r in linhas if r.get("pdf"))
-    print(f"{len(linhas)} referências; {abertos} em acesso aberto; {com_pdf} com PDF direto -> {saida}")
+    aviso = f"{len(falhas)} falharam (ver {falhas_path})" if falhas else "0 falharam"
+    print(f"{len(linhas)} referências; {abertos} em acesso aberto; {com_pdf} com PDF direto; {aviso} -> {saida}")
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
