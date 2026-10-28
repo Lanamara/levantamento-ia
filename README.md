@@ -72,7 +72,7 @@ Tema: *sensoriamento remoto multissensorial aplicado à estimativa de biomassa e
 - Dos 47 artigos abertos, o download automático trouxe 41 (os da MDPI vêm do CDN aberto `mdpi-res.com`, porque o domínio `www.mdpi.com` bloqueia script). Os 6 que faltaram são da Elsevier, da Taylor & Francis e da Springer, que bloqueiam download por script; estão em `exemplo/pdfs/FALTANDO.md`, com o nome que o arquivo deve ter se alguém salvar à mão.
 - 42 artigos foram lidos por inteiro e resumidos, 2 agentes por vez, cerca de 1 minuto cada: [`exemplo/resumos/`](exemplo/resumos/). Um deles (Saim et al., 2025) foi lido numa execução anterior, quando o PDF ainda baixava.
 - Na frente de radar e LiDAR o agente ficou sem a busca na web e buscou direto nas APIs do Crossref e do OpenAlex; o resultado tem a mesma qualidade.
-- Comece por [`exemplo/TABELA.md`](exemplo/TABELA.md) ou baixe o [`exemplo/RELATORIO.html`](exemplo/RELATORIO.html) e abra no navegador (o GitHub mostra o código-fonte, não o renderiza).
+- **Veja o resultado no navegador:** https://victorgit10.github.io/levantamento-ia/exemplo.html (o mesmo `RELATORIO.html` que a IA abre na sua tela no fim). Em texto, comece por [`exemplo/TABELA.md`](exemplo/TABELA.md).
 
 ## Como funciona
 

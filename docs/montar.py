@@ -47,5 +47,11 @@ for chave, valor in {"TABELA": "\n".join(tabela), "N_REFS": len(linhas), "N_INDI
     pagina = pagina.replace("{{" + chave + "}}", str(valor))
 assert "{{" not in pagina, "sobrou marcador no modelo.html"
 (RAIZ / "docs" / "index.html").write_text(pagina, encoding="utf-8")
+
+# O RELATORIO.html do exemplo já traz os resumos dentro; publicado no site, ele
+# abre direto no navegador. Os links "ler" de reserva apontam para o GitHub.
+relatorio = (RAIZ / "exemplo" / "RELATORIO.html").read_text(encoding="utf-8")
+relatorio = relatorio.replace('href="resumos/', f'href="{GH}resumos/')
+(RAIZ / "docs" / "exemplo.html").write_text(relatorio, encoding="utf-8")
 print(f"index.html: {len(linhas)} artigos, {n_indicacoes} indicações ({n_repetidos} repetidos), {abertos} abertos, "
       f"{resumos} resumos, {com_pdf} com PDF, {len(bases)} sem DOI")
