@@ -17,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doi as doilib  # noqa: E402
+from projeto import barrar_exemplo, opcao_exemplo  # noqa: E402
 
 
 MESES = {"jan": "jan", "feb": "feb", "mar": "mar", "apr": "apr", "may": "may", "jun": "jun",
@@ -101,14 +102,19 @@ def main(argv=None):
     ap.add_argument("frentes", help="pasta com uma subpasta por frente")
     ap.add_argument("saida", help="pasta de saída")
     ap.add_argument("tema", help="título do tema")
+    opcao_exemplo(ap)
     a = ap.parse_args(argv)
+    barrar_exemplo(ap, a, a.saida)
     frentes, saida, tema = Path(a.frentes), Path(a.saida), a.tema
     saida.mkdir(parents=True, exist_ok=True)
     blocos, melhor = [], {}  # melhor[doi] = (preenchimento, índice do bloco, posição)
+    sem_tabela = []
     for rel in sorted(frentes.glob("*/RELATORIO.md")):
         linhas = rel.read_text(encoding="utf-8").splitlines()
         ini, fim = primeira_tabela(linhas)
         if ini is None or fim - ini < 3:
+            sem_tabela.append(rel.parent.name)
+            print(f"SEM-TABELA {rel.parent.name}", flush=True)
             continue
         antes = notas_antes(linhas[:ini])
         corpo = linhas[ini + 2:fim]
@@ -140,9 +146,18 @@ def main(argv=None):
             texto += [*resto, ""]
     (saida / "REFERENCIAS.md").write_text("\n".join(texto), encoding="utf-8")
     chaves = set()
-    entradas = [limpar_bib(bibtex(d), chaves) for d in dois]
+    entradas = []
+    for i, d in enumerate(dois, 1):
+        if i == 1 or i % 10 == 0:
+            print(f"BibTeX {i}/{len(dois)}: {d}", flush=True)
+        entradas.append(limpar_bib(bibtex(d), chaves))
     (saida / "referencias.bib").write_text("\n\n".join(entradas) + "\n", encoding="utf-8")
     print(f"{len(dois)} DOIs únicos -> {saida}")
+    if sem_tabela:
+        print("AVISO: frentes sem tabela: " + ", ".join(sem_tabela), flush=True)
+    if not dois:
+        print("AVISO: nenhum DOI encontrado", flush=True)
+    return 1 if sem_tabela or not dois else 0
 
 
 if __name__ == "__main__":

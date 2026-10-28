@@ -1,2 +1,4 @@
 pypdf
+requests
+markdown
 pytest

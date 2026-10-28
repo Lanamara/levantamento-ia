@@ -1,0 +1,3 @@
+# Opcional para melhorar o download de PDFs: abre páginas que só mostram o
+# link do PDF depois de rodar JavaScript.
+playwright

@@ -16,6 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doi as doilib  # noqa: E402
+from projeto import barrar_exemplo, opcao_exemplo  # noqa: E402
 
 ACESSO = {"gold": "aberto (revista)", "diamond": "aberto (sem taxa)", "hybrid": "aberto (híbrido)",
           "green": "aberto (repositório)", "bronze": "aberto (bronze)", "closed": "fechado"}
@@ -121,7 +122,9 @@ def bases_sem_doi(texto):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Monta TABELA.md e tabela.json a partir da cienciometria e dos resumos.")
     ap.add_argument("pasta", help="pasta do levantamento (ex.: exemplo)")
+    opcao_exemplo(ap)
     a = ap.parse_args(argv)
+    barrar_exemplo(ap, a, a.pasta)
     pasta = Path(a.pasta)
     bib = autor_ano_do_bib((pasta / "referencias.bib").read_text(encoding="utf-8"))
     # O DOI de cada resumo está no PEDIDO.md que o preparar_resumos.py escreveu.

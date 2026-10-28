@@ -1,3 +1,7 @@
+# Levantamentos feitos com o repositório: ficam só na máquina da pessoa.
+projetos/
+.venv/
+
 # Logs dos agentes e texto integral dos artigos (direitos autorais): não publicar.
 log.jsonl
 log.anterior*.jsonl
@@ -5,5 +9,6 @@ RELATORIO.parcial*.md
 TEXTO.txt
 *.pdf
 __pycache__/
+.pytest_cache/
 *.invalido
 *.rejeitado

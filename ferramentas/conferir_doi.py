@@ -22,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doi as doilib  # noqa: E402
+from projeto import barrar_exemplo, opcao_exemplo  # noqa: E402
 
 
 def normal(t):
@@ -52,7 +53,9 @@ def consultar(doi, titulo):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Confere no Crossref os DOIs citados nos RELATORIO.md.")
     ap.add_argument("raiz", help="pasta com uma subpasta por frente")
+    opcao_exemplo(ap)
     a = ap.parse_args(argv)
+    barrar_exemplo(ap, a, a.raiz)
     raiz = Path(a.raiz)
     contagem, linhas = Counter(), []
     for rel in sorted(raiz.glob("*/RELATORIO.md")):
