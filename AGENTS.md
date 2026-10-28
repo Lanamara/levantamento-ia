@@ -257,6 +257,10 @@ playwright install chromium
 O Playwright é o último recurso, para páginas que só mostram o link do PDF depois de
 rodar JavaScript. Ele não passa por telas de verificação contra robôs, e não deve.
 Sem ele, o script continua funcionando com `requests`, `curl` e `urllib`.
+No Windows, na primeira vez que ele roda, o Firewall pode perguntar se o
+`chrome-headless-shell` pode acessar a rede. Avise a pessoa antes: pode permitir ou
+cancelar; o aviso trata de conexões que chegam ao programa, e o download continua
+funcionando nos dois casos.
 
 ## Se algo falhar
 

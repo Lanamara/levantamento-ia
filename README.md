@@ -171,7 +171,7 @@ python -m pip install -r requirements-opcional.txt
 playwright install chromium
 ```
 
-O Playwright é o último recurso, para páginas que só mostram o link do PDF depois de rodar JavaScript. O script não contorna paywall, login, captcha nem bloqueio contra robôs: ele se identifica como robô, só tenta o que é de acesso aberto e desiste quando o site recusa. Insistir com disfarce poderia fazer a editora bloquear a rede da instituição inteira.
+O Playwright é o último recurso, para páginas que só mostram o link do PDF depois de rodar JavaScript. No Windows, na primeira vez, o Firewall pode perguntar se o `chrome-headless-shell` pode acessar a rede; pode permitir ou cancelar, o download funciona nos dois casos. O script não contorna paywall, login, captcha nem bloqueio contra robôs: ele se identifica como robô, só tenta o que é de acesso aberto e desiste quando o site recusa. Insistir com disfarce poderia fazer a editora bloquear a rede da instituição inteira.
 
 Quando ainda assim faltar, o script grava `projetos/meu-tema/download.csv` e `projetos/meu-tema/pdfs/FALTANDO.md` com o nome esperado, o DOI, o título e o motivo. A pessoa pode baixar pelo navegador, salvar em `pdfs/` com esse nome (ou com outro; o script reconhece pelo DOI, pelo título ou pelo primeiro autor) e rodar o mesmo comando de novo. O que já está na pasta é aproveitado.
 
