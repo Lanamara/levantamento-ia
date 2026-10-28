@@ -92,6 +92,22 @@ está no `.gitignore`: o trabalho da pessoa não vai para o Git sem ela querer.
 - Se a pessoa estiver em outra máquina ou sem interface gráfica, use `--nao-abrir` e
   entregue os caminhos.
 
+## Etapas longas: não encerre a sua vez no meio
+
+O `orquestrar.py` leva de 5 a 30 minutos por etapa, e o `preparar_resumos.py` de 5 a
+20. **Não termine a sua resposta enquanto um deles estiver rodando.** Em muitos
+assistentes, quando você para de responder, o processo que você abriu morre junto, e
+a pessoa fica esperando um aviso que nunca chega (isso aconteceu num teste).
+
+- Rode em primeiro plano, com tempo limite longo (60 minutos, por exemplo).
+- Se a sua ferramenta só aceitar comandos curtos, rode em segundo plano e continue
+  acompanhando a saída a cada poucos minutos até aparecer `FIM` (no `orquestrar.py`)
+  ou o resumo final (no `preparar_resumos.py`). Só então siga.
+- Siga de uma etapa para a outra sem parar, até a entrega. Pare só para o que precisa
+  da pessoa: o "ok" para instalar e os PDFs que ela vai salvar à mão.
+- Se a etapa parar no meio (a pessoa fechou o chat, o computador dormiu), rode o
+  mesmo comando de novo: o que já terminou é pulado.
+
 ## Mensagens para a pessoa
 
 Use estes modelos, trocando o que está entre `<...>`. Frases curtas, sem jargão.
