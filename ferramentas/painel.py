@@ -3,8 +3,10 @@
 Uso: python painel.py <pasta-do-exemplo>
 
 Lê <pasta>/cienciometria.csv, <pasta>/referencias.bib (autores e ano, como no
-registro do DOI), <pasta>/REFERENCIAS.md (bases e relatórios sem DOI) e
-<pasta>/resumos/*/RELATORIO.md. Grava <pasta>/TABELA.md, ordenada por citações,
+registro do DOI), <pasta>/REFERENCIAS.md (bases e relatórios sem DOI),
+<pasta>/resumos/*/RELATORIO.md, <pasta>/frentes/*/RELATORIO.md (de que frente
+veio cada artigo) e, se existir, <pasta>/minhas_referencias.csv (o que você já
+cita; ver conferir_lista.py). Grava <pasta>/TABELA.md, ordenada por citações,
 com uma seção final para as bases sem DOI, e <pasta>/tabela.json (usada pelo site).
 """
 import argparse
@@ -16,6 +18,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import doi as doilib  # noqa: E402
+import revistas  # noqa: E402
+from conferir_lista import dois_citados  # noqa: E402
 from projeto import barrar_exemplo, opcao_exemplo  # noqa: E402
 
 ACESSO = {"gold": "aberto (revista)", "diamond": "aberto (sem taxa)", "hybrid": "aberto (híbrido)",
@@ -119,6 +123,35 @@ def bases_sem_doi(texto):
     return saida
 
 
+def frentes_por_doi(pasta):
+    """{doi: [frentes]} a partir das tabelas de frentes/*/RELATORIO.md."""
+    saida = {}
+    for rel in sorted(Path(pasta).glob("frentes/*/RELATORIO.md")):
+        for linha in rel.read_text(encoding="utf-8").splitlines():
+            if not linha.lstrip().startswith("|"):
+                continue
+            d = doilib.achar(linha)
+            if d and rel.parent.name not in saida.setdefault(d.lower(), []):
+                saida[d.lower()].append(rel.parent.name)
+    return saida
+
+
+def indicadores_texto(l):
+    """Texto curto dos indicadores da revista, para a tabela em Markdown."""
+    partes = []
+    if l.get("sinal_revista") == "retratado":
+        partes.append("⛔ retratado")
+    if l.get("doaj") == "sim":
+        partes.append("DOAJ")
+    if l.get("cwts_core") == "sim":
+        partes.append("CWTS Core")
+    if l.get("qualis"):
+        partes.append(f"Qualis {l['qualis']}")
+    if l.get("sinal_revista") == "conferir":
+        partes.append("⚠ conferir")
+    return " · ".join(partes)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Monta TABELA.md e tabela.json a partir da cienciometria e dos resumos.")
     ap.add_argument("pasta", help="pasta do levantamento (ex.: exemplo)")
@@ -137,6 +170,8 @@ def main(argv=None):
         resumos[d] = f"resumos/{rel.parent.name}/RELATORIO.md"
         if re.search(r"arxiv|preprint", rel.read_text(encoding="utf-8")[:3000], re.I):
             preprint.add(d)
+    frentes = frentes_por_doi(pasta)
+    citados = dois_citados(pasta)
     linhas = []
     for r in csv.DictReader(open(pasta / "cienciometria.csv", encoding="utf-8-sig")):
         d = r["doi"].lower()
@@ -152,19 +187,25 @@ def main(argv=None):
             "fwci": r.get("fwci", ""), "percentil": r.get("percentil", ""),
             "acesso": ACESSO.get(r.get("acesso", ""), r.get("acesso", "")),
             "resumo": resumos.get(d, ""), "preprint": d in preprint,
+            **{c: r.get(c, "") for c in revistas.CAMPOS},
+            "frentes": frentes.get(d, []), "ja_citado": d in citados,
         })
     linhas.sort(key=lambda l: -l["citacoes"])
     md = ["# Referências por citação", "",
           "Fonte: OpenAlex. FWCI = citações normalizadas por área e ano (1 = média mundial). "
           "Percentil = posição do artigo entre os da mesma área e ano (99 = entre os 1% mais citados). "
           "Autores e ano como no registro do DOI.", "",
-          "| Citações | FWCI | Percentil | Autores (ano) | Título | Revista | Acesso | Resumo |",
-          "|---:|---:|---:|---|---|---|---|---|"]
+          "Indicadores da revista: DOAJ e CWTS Core (OpenAlex), Qualis (planilha da Sucupira, se dada), "
+          "⛔ = artigo retratado (Retraction Watch, via OpenAlex), ⚠ conferir = a revista não está em "
+          "nenhuma dessas listas; isso não quer dizer que seja predatória.", "",
+          "| Citações | FWCI | Percentil | Autores (ano) | Título | Revista | Indicadores | Frente | Já cito | Acesso | Resumo |",
+          "|---:|---:|---:|---|---|---|---|---|---|---|---|"]
     for l in linhas:
         res = f"[ler]({l['resumo']})" + (" (preprint)" if l["preprint"] else "") if l["resumo"] else ""
         md.append(f"| {l['citacoes']} | {l['fwci']} | {l['percentil']} | {celula(l['autores'])} | "
                   f"[{celula(l['titulo'])}](https://doi.org/{l['doi']}) | {celula(l['revista'])} | "
-                  f"{l['acesso']} | {res} |")
+                  f"{celula(indicadores_texto(l))} | {celula(', '.join(l['frentes']))} | "
+                  f"{'sim' if l['ja_citado'] else ''} | {l['acesso']} | {res} |")
     bases = bases_sem_doi((pasta / "REFERENCIAS.md").read_text(encoding="utf-8"))
     if bases:
         md += ["", "## Bases e relatórios sem DOI", "",
@@ -173,6 +214,8 @@ def main(argv=None):
     (pasta / "TABELA.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     (pasta / "tabela.json").write_text(json.dumps(linhas, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(linhas)} referências, {len(resumos)} com resumo, {len(bases)} sem DOI -> {pasta / 'TABELA.md'}")
+    if citados:
+        print(f"{sum(1 for l in linhas if l['ja_citado'])} já citadas na sua lista")
 
 
 if __name__ == "__main__":

@@ -9,13 +9,13 @@
 :root{
   --bg:#f5f6f8; --card:#ffffff; --ink:#1a2028; --muted:#59636f; --line:#d9dde3;
   --accent:#1f4f72; --accent-soft:#e2ecf3; --good:#2c6b4a; --good-soft:#e1efe7;
-  --warn:#8a5a0b; --warn-soft:#f5ead3;
+  --warn:#8a5a0b; --warn-soft:#f5ead3; --bad:#9b1c1c; --bad-soft:#f7dede;
 }
 @media (prefers-color-scheme: dark){
   :root{
     --bg:#12161b; --card:#1a2028; --ink:#e6eaef; --muted:#9aa6b3; --line:#2e3742;
     --accent:#8fc0e3; --accent-soft:#1c2c3a; --good:#86c9a3; --good-soft:#1b3127;
-    --warn:#e2b765; --warn-soft:#352b18;
+    --warn:#e2b765; --warn-soft:#352b18; --bad:#f19a9a; --bad-soft:#3a1c1c;
     color-scheme:dark;
   }
 }
@@ -51,6 +51,12 @@ button{font:inherit;cursor:pointer}
 .ler{background:var(--accent-soft);color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;text-decoration:none}
 .ler:hover{background:var(--accent);color:var(--bg)}
 .mudo{color:var(--muted);font-size:14px}
+.pequeno{font-size:12px;margin-top:3px}
+.selo{display:inline-block;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:0 3px 3px 0;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.selo.alerta{background:var(--warn-soft);color:var(--warn)}
+.selo.ruim{background:var(--bad-soft);color:var(--bad)}
+.selo.citado{background:var(--good-soft);color:var(--good)}
+tr.retratado td{background:var(--bad-soft)}
 .ok{background:var(--good-soft);border:1px solid var(--line);border-left:4px solid var(--good);border-radius:8px;padding:12px 14px}
 .aviso{background:var(--warn-soft);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:8px;padding:12px 14px}
 code{font-family:ui-monospace,Consolas,monospace;font-size:.92em;background:var(--accent-soft);padding:1px 5px;border-radius:4px}
@@ -96,6 +102,9 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--muted);f
       <div class="kpi"><b>{{N_RESUMOS}}</b><span>resumos de leitura integral</span></div>
       <div class="kpi"><b>{{N_BASES}}</b><span>bases e relatórios sem DOI</span></div>
       <div class="kpi"><b>{{N_FALTANDO}}</b><span>PDFs pendentes</span></div>
+      <div class="kpi"><b>{{N_CONFERIR}}</b><span>revistas a conferir ou retratados</span></div>
+      <div class="kpi"><b>{{N_CITADOS}}</b><span>já citados por você</span></div>
+      <div class="kpi"><b>{{N_NOVOS}}</b><span>novos na última atualização</span></div>
     </div>
   </div>
 </header>
@@ -109,6 +118,21 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--muted);f
         <option value="">Todo o acesso</option>
 {{OPCOES_ACESSO}}
       </select>
+      <select id="frente" aria-label="Filtrar por frente">
+        <option value="">Todas as frentes</option>
+{{OPCOES_FRENTE}}
+      </select>
+      <select id="sinal" aria-label="Filtrar por indicador da revista">
+        <option value="">Todas as revistas</option>
+        <option value="ok">Revista listada (DOAJ, CWTS ou Qualis)</option>
+        <option value="conferir">⚠ Revista a conferir</option>
+        <option value="retratado">⛔ Artigo retratado</option>
+      </select>
+      <select id="citado" aria-label="Filtrar por já citado">
+        <option value="">Citados e não citados</option>
+        <option value="sim">Só os que já cito</option>
+        <option value="nao">Só os que ainda não cito</option>
+      </select>
       <span class="dica">Clique em um cabeçalho para ordenar. Clique em “ler” para abrir o resumo.</span>
     </div>
     <div class="tablewrap">
@@ -120,6 +144,7 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--muted);f
             <th><button class="ordenar" data-col="percentil">Percentil</button></th>
             <th><button class="ordenar" data-col="ano">Ano</button></th>
             <th>Referência</th>
+            <th>Revista</th>
             <th>Acesso</th>
             <th>Resumo</th>
           </tr>
@@ -131,6 +156,12 @@ footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--muted);f
     </div>
     <p class="mudo" id="vazio" hidden>Nenhuma referência com esse filtro.</p>
     <p class="mudo">FWCI = citações normalizadas por área e ano (1 = média mundial). Percentil = posição entre os artigos da mesma área e ano. Dados do OpenAlex; autores e ano como no registro do DOI.</p>
+    <p class="mudo">Revista: DOAJ e CWTS Core vêm do OpenAlex; Qualis CAPES 2021–2024, da planilha da Plataforma Sucupira (quando fornecida); retratações, do Retraction Watch via OpenAlex. “⚠ conferir” quer dizer só que a revista não está em nenhuma dessas listas — não é um rótulo de revista predatória. Não existe lista aberta e oficial de revistas predatórias; se a sua instituição assinar o Cabells Predatory Reports, confira lá.</p>
+  </section>
+
+  <section>
+    <h2>Novidades</h2>
+{{NOVIDADES}}
   </section>
 
   <section>
@@ -172,21 +203,26 @@ const corpo = document.getElementById('tabela').tBodies[0];
 const linhas = Array.from(corpo.rows);
 const busca = document.getElementById('busca');
 const acesso = document.getElementById('acesso');
+const frente = document.getElementById('frente');
+const sinal = document.getElementById('sinal');
+const citado = document.getElementById('citado');
 const vazio = document.getElementById('vazio');
 
 function filtrar() {
   const q = busca.value.toLowerCase().trim();
-  const a = acesso.value;
+  const a = acesso.value, f = frente.value, s = sinal.value, c = citado.value;
   let n = 0;
   for (const tr of linhas) {
-    const ok = (!q || tr.textContent.toLowerCase().includes(q)) && (!a || tr.dataset.acesso === a);
+    const ok = (!q || tr.textContent.toLowerCase().includes(q)) && (!a || tr.dataset.acesso === a)
+      && (!f || (tr.dataset.frentes || '').split('|').includes(f))
+      && (!s || tr.dataset.sinal === s) && (!c || tr.dataset.citado === c);
     tr.hidden = !ok;
     if (ok) n++;
   }
   vazio.hidden = n > 0;
 }
 busca.addEventListener('input', filtrar);
-acesso.addEventListener('change', filtrar);
+[acesso, frente, sinal, citado].forEach(function (el) { el.addEventListener('change', filtrar); });
 
 let ordem = {col: 'citacoes', dir: -1};
 document.querySelectorAll('.ordenar').forEach(function (botao) {

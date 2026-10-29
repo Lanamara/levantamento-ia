@@ -3,7 +3,9 @@
 Uso: python publicar.py <pasta-do-levantamento> [--saida RELATORIO.html]
 
 O HTML abre com dois cliques, sem servidor e sem internet: a tabela tem busca,
-filtro por acesso e ordenação, e cada resumo abre numa janela. É a camada
+filtros (acesso, frente, indicador da revista, já citado) e ordenação, e cada
+resumo abre numa janela. Se existir novidades.csv (atualizar.py), a página mostra
+os trabalhos novos encontrados na última atualização. É a camada
 humana da entrega; o TABELA.md continua sendo a versão de texto, e o
 tabela.json / cienciometria.csv são a camada de dados.
 """
@@ -72,6 +74,37 @@ def _numero(valor):
         return 0
 
 
+SINAIS = {"ok": ("ok", "revista listada"), "conferir": ("conferir", "⚠ conferir revista"),
+          "retratado": ("retratado", "⛔ retratado")}
+
+
+def _indicadores(l):
+    """Selos dos indicadores da revista (só fatos da fonte; nada de "predatória")."""
+    selos = []
+    if l.get("sinal_revista") == "retratado":
+        selos.append('<span class="selo ruim" title="Artigo retratado (Retraction Watch, via OpenAlex)">⛔ retratado</span>')
+    if l.get("doaj") == "sim":
+        selos.append('<span class="selo" title="Revista no DOAJ (OpenAlex)">DOAJ</span>')
+    if l.get("cwts_core") == "sim":
+        selos.append('<span class="selo" title="Revista na lista CWTS Core (OpenAlex)">CWTS</span>')
+    if l.get("qualis"):
+        selos.append(f'<span class="selo" title="Qualis CAPES 2021-2024 (planilha da Sucupira)">Qualis {_celula(l["qualis"])}</span>')
+    if l.get("sinal_revista") == "conferir":
+        selos.append('<span class="selo alerta" title="A revista não está no DOAJ, no CWTS Core nem na planilha do Qualis. '
+                     'Isso não quer dizer que seja predatória: confira à mão.">⚠ conferir</span>')
+    extra = []
+    if l.get("editora"):
+        extra.append(_celula(l["editora"]))
+    if l.get("issn_l"):
+        extra.append("ISSN " + _celula(l["issn_l"]))
+    if l.get("h_index_revista") not in (None, ""):
+        extra.append("h " + _celula(l["h_index_revista"]))
+    if l.get("apc_usd") not in (None, ""):
+        extra.append(f"APC US$ {_celula(l['apc_usd'])}")
+    detalhes = f'<div class="mudo pequeno">{" · ".join(extra)}</div>' if extra else ""
+    return (" ".join(selos) or '<span class="mudo">—</span>') + detalhes
+
+
 def _linha(l):
     autores = l.get("autores") or (f'{l.get("autor") or ""} ({l.get("ano") or ""})'.strip())
     titulo = _celula(l.get("titulo"))
@@ -86,16 +119,24 @@ def _linha(l):
             botao += ' <span class="mudo">(preprint)</span>'
     else:
         botao = '<span class="mudo">—</span>'
+    frentes = l.get("frentes") or []
+    classe = ' class="retratado"' if l.get("sinal_revista") == "retratado" else ""
+    citado = '<span class="selo citado" title="Já está na sua lista de referências">já cito</span> ' if l.get("ja_citado") else ""
     return (
-        f'<tr data-citacoes="{int(_numero(l.get("citacoes")))}" '
+        f'<tr{classe} data-sinal="{html.escape(l.get("sinal_revista") or "", quote=True)}" '
+        f'data-frentes="{html.escape("|".join(frentes), quote=True)}" '
+        f'data-citado="{"sim" if l.get("ja_citado") else "nao"}" '
+        f'data-citacoes="{int(_numero(l.get("citacoes")))}" '
         f'data-fwci="{_numero(l.get("fwci"))}" data-percentil="{_numero(l.get("percentil"))}" '
         f'data-ano="{_numero(l.get("ano"))}" data-acesso="{html.escape(l.get("acesso") or "", quote=True)}">'
         f'<td class="n">{int(_numero(l.get("citacoes")))}</td>'
         f'<td class="n">{_celula(l.get("fwci")) or "—"}</td>'
         f'<td class="n">{_celula(l.get("percentil")) or "—"}</td>'
         f'<td class="n">{_celula(l.get("ano")) or "—"}</td>'
-        f'<td>{_celula(autores)}. <a href="https://doi.org/{doi}" target="_blank" rel="noopener">{titulo}</a>. '
-        f'<span class="mudo">{_celula(l.get("revista"))}</span></td>'
+        f'<td>{citado}{_celula(autores)}. <a href="https://doi.org/{doi}" target="_blank" rel="noopener">{titulo}</a>. '
+        f'<span class="mudo">{_celula(l.get("revista"))}</span>'
+        f'<div class="mudo pequeno">{_celula(", ".join(frentes))}</div></td>'
+        f'<td>{_indicadores(l)}</td>'
         f'<td>{acesso}</td><td>{botao}</td></tr>')
 
 
@@ -104,6 +145,47 @@ def _opcoes_acesso(linhas):
     return "\n".join(
         f'        <option value="{html.escape(v, quote=True)}">{html.escape(v)}</option>'
         for v in valores)
+
+
+def _opcoes(valores):
+    return "\n".join(
+        f'        <option value="{html.escape(v, quote=True)}">{html.escape(v)}</option>'
+        for v in valores)
+
+
+def _opcoes_frente(linhas):
+    return _opcoes(sorted({f for l in linhas for f in (l.get("frentes") or [])}))
+
+
+def _novidades(pasta):
+    """(texto da data, HTML) dos trabalhos da última atualização, ou ("", aviso)."""
+    caminho = pasta / "novidades.csv"
+    if not caminho.exists():
+        return "—", ('<p class="mudo">Ainda não houve atualização. Rode '
+                     '<code>ferramentas/atualizar.py</code> (ou espere a atualização mensal).</p>')
+    try:
+        with open(caminho, encoding="utf-8-sig") as f:
+            todas = list(csv.DictReader(f))
+    except (OSError, UnicodeError):
+        return "—", '<p class="mudo">Não consegui ler <code>novidades.csv</code>.</p>'
+    if not todas:
+        return "0", '<p class="ok">Nenhum trabalho novo nas buscas feitas até agora.</p>'
+    ultima = max(r.get("data_busca") or "" for r in todas)
+    recentes = [r for r in todas if (r.get("data_busca") or "") == ultima]
+    partes = [f'<p class="mudo">Última atualização: {_celula(ultima)} · {len(recentes)} trabalho(s) novo(s) · '
+              f'{len(todas)} no total desde a primeira atualização (ver <code>NOVIDADES.md</code>). '
+              'Encontrados por busca automática no OpenAlex: leia o resumo antes de incluir.</p>',
+              '<div class="tablewrap"><table><thead><tr><th>Ano</th><th>Referência</th>'
+              '<th>Indicadores</th><th>Frente</th></tr></thead><tbody>']
+    for r in recentes:
+        doi = urllib.parse.quote(str(r.get("doi") or ""), safe="/()")
+        partes.append(
+            f'<tr><td class="n">{_celula(r.get("ano"))}</td>'
+            f'<td><a href="https://doi.org/{doi}" target="_blank" rel="noopener">{_celula(r.get("titulo"))}</a>. '
+            f'<span class="mudo">{_celula(r.get("primeiro_autor"))} · {_celula(r.get("revista"))}</span></td>'
+            f'<td>{_indicadores(r)}</td><td class="mudo">{_celula(r.get("frente"))}</td></tr>')
+    partes.append("</tbody></table></div>")
+    return str(len(recentes)), "\n".join(partes)
 
 
 def _resumos(pasta, linhas):
@@ -166,6 +248,9 @@ def gerar(pasta, saida=None):
                   if l.get("acesso") and l.get("acesso") not in ("fechado", "closed"))
     resumos = sum(1 for l in linhas if l.get("resumo"))
     subtitulo = f"{len(linhas)} referências · {abertos} em acesso aberto · {resumos} resumos"
+    a_conferir = sum(1 for l in linhas if l.get("sinal_revista") in ("conferir", "retratado"))
+    citados = sum(1 for l in linhas if l.get("ja_citado"))
+    n_novos, bloco_novidades = _novidades(pasta)
 
     if faltando is None:
         bloco_faltando = ('<p class="mudo">Sem <code>download.csv</code> neste projeto. '
@@ -209,6 +294,11 @@ def gerar(pasta, saida=None):
         "N_BASES": len(bases),
         "N_FALTANDO": n_faltando,
         "OPCOES_ACESSO": _opcoes_acesso(linhas),
+        "OPCOES_FRENTE": _opcoes_frente(linhas),
+        "N_CONFERIR": a_conferir,
+        "N_CITADOS": citados,
+        "N_NOVOS": n_novos,
+        "NOVIDADES": bloco_novidades,
         "TABELA": "\n".join(_linha(l) for l in linhas),
         "BASES": bloco_bases,
         "FALTANDO": bloco_faltando,

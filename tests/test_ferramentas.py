@@ -758,7 +758,7 @@ def test_cienciometria_separa_falhas(tmp_path, monkeypatch, capsys):
     bib.write_text("@article{a, DOI={10.1/ok}}\n@article{b, DOI={10.1/falha}}\n", encoding="utf-8")
     saida = tmp_path / "cienciometria.csv"
 
-    def fake(doi, email):
+    def fake(doi, email, *_):
         if doi.endswith("falha"):
             raise RuntimeError("sem rede")
         return {"doi": doi, "ano": 2020, "primeiro_autor": "Silva", "titulo": "T",
@@ -787,7 +787,7 @@ def test_cienciometria_falha_usa_metadados_do_bib(tmp_path, monkeypatch):
         "@article{b, DOI={10.1/falha}, title={Um artigo}, "
         "author={Silva, Ana and Souza, B.}, year={2021}}",
         encoding="utf-8")
-    def falha(doi, email):
+    def falha(doi, email, *_):
         raise RuntimeError("sem rede")
 
     monkeypatch.setattr(cienciometria, "consulta", falha)
@@ -804,7 +804,7 @@ def test_cienciometria_falha_usa_metadados_do_bib(tmp_path, monkeypatch):
 def test_cienciometria_tenta_duas_vezes(monkeypatch):
     chamadas = []
 
-    def fake(doi, email):
+    def fake(doi, email, *_):
         chamadas.append(doi)
         if len(chamadas) == 1:
             raise RuntimeError("429")
@@ -825,7 +825,7 @@ def test_cienciometria_progresso_a_cada_10(tmp_path, monkeypatch, capsys):
     bib = tmp_path / "referencias.bib"
     bib.write_text("\n".join(f"@article{{a{i}, DOI={{10.1/{i}}}}}" for i in range(11)),
                    encoding="utf-8")
-    monkeypatch.setattr(cienciometria, "consulta", lambda doi, email: {
+    monkeypatch.setattr(cienciometria, "consulta", lambda doi, email, *_: {
         "doi": doi, "ano": 2020, "primeiro_autor": "S", "titulo": "T", "revista": "R",
         "citacoes": 0, "fwci": "", "percentil": "", "acesso": "", "pdf": "",
         "pdf_alternativos": ""})
