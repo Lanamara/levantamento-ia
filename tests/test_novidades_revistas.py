@@ -282,3 +282,58 @@ def test_projeto_do_doutorado_bem_formado():
     assert pedidos == sorted(cfg["frentes"]) and len(pedidos) == 6
     for x in p.glob("frentes/*/PEDIDO.md"):
         assert "{" + "TEMA}" not in x.read_text(encoding="utf-8")
+
+
+# --- conferir_citacoes ----------------------------------------------------
+
+import conferir_citacoes  # noqa: E402
+
+LISTA_CIT = [
+    "ROSS, J. L. S. Análise empírica da fragilidade dos ambientes naturais. Revista do Departamento de Geografia, n. 8, p. 63–74, 1994.",
+    "GORELICK, N. et al. Google Earth Engine. Remote Sensing of Environment, v. 202, p. 18–27, 2017.",
+    "IMB – INSTITUTO MAURO BORGES. Goiás em dados – 2022. Goiânia: IMB, 2022. Disponível em: https://www.imb.go.gov.br/. Acesso em: 03 out. 2025.",
+    "GOIÁS. Decreto nº 9.891 (Alterado pelo Decreto nº 10.683). Goiânia, 2025.",
+    "GOIÁS. Resolução nº 001. Goiânia: SEAPA, 2025.",
+    "MARTINS-NETO, R. P. et al. Tree Species Classification. Forests, v. 14, 2023. DOI: https://doi.org/10.3390/f14050945.",
+]
+
+
+def test_citacoes_parenteses_e_narrativa():
+    texto = ("Perfil diversificado (IMB, 2022; GORELICK et al., 2017, p. 20). Segundo Ross (1994), "
+             "e Martins-Neto et al. (2023). Entre 2012 e 2021 (ODS 13).")
+    achadas = {(c, a) for c, a, _ in conferir_citacoes.citacoes(texto)}
+    assert achadas == {("IMB", "2022"), ("GORELICK", "2017"), ("ROSS", "1994"), ("MARTINS-NETO", "2023")}
+
+
+def test_ano_referencia_ignora_acesso_e_doi():
+    assert conferir_citacoes.ano_referencia(LISTA_CIT[2]) == "2022"
+    assert conferir_citacoes.ano_referencia(LISTA_CIT[5]) == "2023"
+    assert conferir_citacoes.chave_referencia(LISTA_CIT[2]) == "IMB"
+
+
+def test_conferir_citacoes_estados():
+    texto = "Texto (IMB, 2022). Ross (2012) e (SILVA, 2020)."
+    achados = conferir_citacoes.conferir(texto, LISTA_CIT)
+    por_estado = {}
+    for estado, chave, ano, _ in achados:
+        por_estado.setdefault(estado, set()).add((chave, ano))
+    assert por_estado["OK"] == {("IMB", "2022")}
+    assert por_estado["ANO-DIFERE"] == {("ROSS", "2012")}
+    assert por_estado["CITADA-SEM-REFERENCIA"] == {("SILVA", "2020")}
+    assert por_estado["MESMO-AUTOR-ANO"] == {("GOIAS", "2025")}
+    assert ("GORELICK", "2017") in por_estado["NAO-CITADA"]
+
+
+def test_conferir_citacoes_le_docx(tmp_path):
+    docx = pytest.importorskip("docx")
+    d = docx.Document()
+    d.add_paragraph("Introdução com citação (IMB, 2022).")
+    d.add_paragraph("REFERÊNCIAS BIBLIOGRÁFICAS")
+    for r in LISTA_CIT:
+        d.add_paragraph(r)
+    arq = tmp_path / "texto.docx"
+    d.save(arq)
+    saida = tmp_path / "CITACOES.md"
+    assert conferir_citacoes.main([str(arq), str(saida)]) == 0
+    md = saida.read_text(encoding="utf-8")
+    assert "OK: 1" in md and "MESMO-AUTOR-ANO: 1" in md
