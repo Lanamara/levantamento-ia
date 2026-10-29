@@ -4,6 +4,31 @@ Um tema de pesquisa vira uma lista de referências conferidas, com dados de cita
 
 **Site com a explicação e o exemplo:** https://victorgit10.github.io/levantamento-ia/
 
+## Neste fork
+
+Fork de [VictorGit10/levantamento-ia](https://github.com/VictorGit10/levantamento-ia) para o doutorado de Lana Teixeira (PPGCA/UFG), com estes acréscimos:
+
+| O quê | Onde | Como |
+|---|---|---|
+| Projeto do doutorado, 6 frentes | `projetos/doutorado-silvicultura-go/` | hiperespectral (PRISMA/EnMAP); LiDAR GEDI e ICESat-2 como referência; fusão com aprendizado de máquina; idade e produtividade; fragilidade e AHP/WLC; Goiás, Cerrado e seringueira |
+| Revista oficial e indicadores | `ferramentas/revistas.py`, usado pelo `cienciometria.py` | nome, ISSN-L, editora, APC e índice h (OpenAlex); DOAJ e CWTS Core (OpenAlex); retratação (Retraction Watch, via OpenAlex); Qualis CAPES 2021–2024 com `--qualis planilha.csv` exportada da Sucupira |
+| Conferência das suas referências | `ferramentas/conferir_lista.py` | confere título, ano, volume e páginas no Crossref; sugere DOI (OpenAlex) só quando título e ano batem; grava `MINHAS_REFERENCIAS.md` |
+| Relatório com filtros | `ferramentas/publicar.py`, `modelos/relatorio.html` | filtros por frente, indicador da revista e "já cito"; retratados em vermelho; seção Novidades |
+| Atualização mensal | `ferramentas/atualizar.py`, `.github/workflows/atualizar.yml` | busca no OpenAlex o que foi publicado desde a última vez, com as consultas de `consultas.json`; grava `NOVIDADES.md` |
+
+**Sobre "revista predatória".** Não existe lista aberta e oficial: a lista de Beall saiu do ar em 2017 e o Cabells Predatory Reports é pago. Por isso a tabela não rotula revistas como predatórias. Ela mostra fatos conferíveis (DOAJ, CWTS Core, Qualis, retratação) e marca "⚠ conferir" quando a revista não está em nenhuma dessas listas, o que pede uma conferência à mão, não uma condenação.
+
+**Atualização mensal.** Roda no dia 1 de cada mês pelo GitHub Actions. Em forks, os agendamentos começam desativados: abra a aba **Actions** e ative os workflows. O GitHub também desativa agendamentos de repositórios públicos sem atividade por 60 dias; como cada execução grava `atualizacao.json`, o próprio workflow mantém o repositório ativo. Para rodar na hora: **Actions → Atualização mensal do levantamento → Run workflow**. À mão: `python ferramentas/atualizar.py projetos/doutorado-silvicultura-go`.
+
+```
+# referências do pré-projeto
+python ferramentas/conferir_lista.py projetos/doutorado-silvicultura-go/minhas_referencias.txt projetos/doutorado-silvicultura-go
+# cienciometria com Qualis (opcional)
+python ferramentas/cienciometria.py projetos/doutorado-silvicultura-go/referencias.bib projetos/doutorado-silvicultura-go/cienciometria.csv --qualis projetos/doutorado-silvicultura-go/qualis.csv
+# trabalhos novos
+python ferramentas/atualizar.py projetos/doutorado-silvicultura-go
+```
+
 ## Peça à sua IA (o jeito mais fácil)
 
 Você precisa de um assistente com acesso a terminal, arquivos e internet (Claude Code, Codex, opencode, Cursor e afins). Ele confere o que falta, pede seu ok e instala o resto com você; você não precisa digitar comando nem entender de programação. Cole isto no chat:

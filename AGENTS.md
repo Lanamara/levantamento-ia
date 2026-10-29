@@ -191,6 +191,14 @@ criou o `.venv`, use o Python dele (`.venv/bin/python` ou
 da pessoa. No PowerShell, troque `cp` por `Copy-Item` e `mkdir -p` por
 `New-Item -ItemType Directory -Force`.
 
+## Acréscimos deste fork
+
+- **Projeto já montado:** o doutorado está em `projetos/doutorado-silvicultura-go/`, com `PLANO.md`, as 6 frentes e `consultas.json`. Essa pasta fica no Git (exceção no `.gitignore`) por causa da atualização mensal; PDFs, `TEXTO.txt` e logs continuam fora.
+- **Antes da etapa 4**, rode `python ferramentas/conferir_lista.py <pasta>/minhas_referencias.txt <pasta>` e mostre à pessoa o resumo de `MINHAS_REFERENCIAS.md`. Não altere a lista dela: os estados `CONFERIR`, `TITULO-DIFERE`, `NAO-EXISTE` e `SUGERIDO` são para ela decidir.
+- **Na etapa 4**, se existir `<pasta>/qualis.csv` (planilha da Sucupira), passe `--qualis <pasta>/qualis.csv` ao `cienciometria.py`.
+- **Indicadores da revista:** nunca escreva que uma revista é "predatória". Diga só o que a tabela mostra (DOAJ, CWTS Core, Qualis, retratação) e, para "⚠ conferir", sugira conferir à mão.
+- **Atualização:** `python ferramentas/atualizar.py <pasta>` acrescenta trabalhos novos a `NOVIDADES.md`. São candidatos de busca automática; não os junte ao levantamento sem a pessoa pedir.
+
 ## Como escolher as frentes
 
 - 3 a 5 recortes estreitos, não um tema amplo. Exemplo: em vez de "sensoriamento

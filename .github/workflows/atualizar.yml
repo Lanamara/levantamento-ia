@@ -1,0 +1,57 @@
+# Busca mensal de trabalhos novos para o levantamento do doutorado.
+# Roda no dia 1 de cada mês e também pelo botão "Run workflow" (aba Actions).
+# Só grava NOVIDADES.md, novidades.csv, atualizacao.json e o RELATORIO.html do
+# projeto; o levantamento principal não é alterado.
+#
+# Segredos opcionais (Settings > Secrets and variables > Actions):
+#   OPENALEX_API_KEY  chave gratuita do OpenAlex (aumenta o limite diário)
+#   OPENALEX_EMAIL    e-mail enviado no parâmetro mailto
+# Qualis: se existir projetos/<projeto>/qualis.csv (exportado da Sucupira), ele é usado.
+name: Atualização mensal do levantamento
+
+on:
+  schedule:
+    - cron: "17 10 1 * *"   # dia 1, 10:17 UTC (07:17 em Brasília)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    env:
+      PROJETO: projetos/doutorado-silvicultura-go
+      OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
+      OPENALEX_EMAIL: ${{ secrets.OPENALEX_EMAIL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt
+
+      - name: Buscar trabalhos novos
+        run: |
+          QUALIS=""
+          if [ -f "$PROJETO/qualis.csv" ]; then QUALIS="--qualis $PROJETO/qualis.csv"; fi
+          python ferramentas/atualizar.py "$PROJETO" --email "$OPENALEX_EMAIL" $QUALIS
+
+      - name: Refazer o RELATORIO.html (se o levantamento já existir)
+        run: |
+          if [ -f "$PROJETO/tabela.json" ]; then python ferramentas/publicar.py "$PROJETO"; fi
+
+      - name: Gravar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$PROJETO"
+          if git diff --cached --quiet; then
+            echo "Nada novo para gravar."
+          else
+            git commit -m "Atualização mensal: novidades de $(date -u +%Y-%m-%d)"
+            git push
+          fi
