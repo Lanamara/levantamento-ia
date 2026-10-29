@@ -13,6 +13,15 @@ on:
   schedule:
     - cron: "17 10 1 * *"   # dia 1, 10:17 UTC (07:17 em Brasília)
   workflow_dispatch:
+    inputs:
+      desde:
+        description: "Teste: buscar desde esta data (AAAA-MM-DD). Vazio = automático"
+        required: false
+        default: ""
+      gravar:
+        description: "Gravar o resultado no repositório?"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -25,9 +34,9 @@ jobs:
       OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
       OPENALEX_EMAIL: ${{ secrets.OPENALEX_EMAIL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -38,13 +47,16 @@ jobs:
         run: |
           QUALIS=""
           if [ -f "$PROJETO/qualis.csv" ]; then QUALIS="--qualis $PROJETO/qualis.csv"; fi
-          python ferramentas/atualizar.py "$PROJETO" --email "$OPENALEX_EMAIL" $QUALIS
+          DESDE=""
+          if [ -n "${{ inputs.desde }}" ]; then DESDE="--desde ${{ inputs.desde }}"; fi
+          python ferramentas/atualizar.py "$PROJETO" --email "$OPENALEX_EMAIL" $QUALIS $DESDE
 
       - name: Refazer o RELATORIO.html (se o levantamento já existir)
         run: |
           if [ -f "$PROJETO/tabela.json" ]; then python ferramentas/publicar.py "$PROJETO"; fi
 
       - name: Gravar no repositório
+        if: ${{ github.event_name == 'schedule' || inputs.gravar }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
