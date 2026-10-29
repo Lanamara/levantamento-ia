@@ -1,8 +1,10 @@
-# Levantamento bibliográfico com agentes de IA gratuitos
+# Levantamento bibliográfico do doutorado — Lana Teixeira (PPGCA/UFG)
 
-Um tema de pesquisa vira uma lista de referências conferidas, com dados de citação e um resumo de cada artigo aberto, usando o [opencode](https://opencode.ai) com o modelo **DeepSeek V4.1 Flash gratuito**. Não precisa de conta nem de assinatura.
+Levantamento e acompanhamento da literatura para a tese *Sensoriamento remoto multissensorial aplicado à estimativa de biomassa e estoque de carbono da silvicultura no estado de Goiás*.
 
-**Site com a explicação e o exemplo:** https://victorgit10.github.io/levantamento-ia/
+**Relatório do levantamento:** https://lanamara.github.io/levantamento-ia/projetos/doutorado-silvicultura-go/RELATORIO.html
+
+Ferramenta original: [VictorGit10/levantamento-ia](https://github.com/VictorGit10/levantamento-ia), de Victor Amaral (LAPIG/UFG), com explicação em https://victorgit10.github.io/levantamento-ia/. Um tema de pesquisa vira uma lista de referências conferidas, com dados de citação e um resumo de cada artigo aberto, usando o [opencode](https://opencode.ai) com o modelo **DeepSeek V4.1 Flash gratuito**. Não precisa de conta nem de assinatura.
 
 ## Neste fork
 
@@ -35,7 +37,7 @@ python ferramentas/atualizar.py projetos/doutorado-silvicultura-go
 
 Você precisa de um assistente com acesso a terminal, arquivos e internet (Claude Code, Codex, opencode, Cursor e afins). Ele confere o que falta, pede seu ok e instala o resto com você; você não precisa digitar comando nem entender de programação. Cole isto no chat:
 
-> Leia o repositório https://github.com/VictorGit10/levantamento-ia e faça um levantamento bibliográfico sobre: **<seu tema>**.
+> Leia o repositório https://github.com/Lanamara/levantamento-ia e faça um levantamento bibliográfico sobre: **<seu tema>**.
 
 A IA lê o [`AGENTS.md`](AGENTS.md), confere o Python (`python --version`, 3.10 ou mais) e roda o `ferramentas/conferir.py`, que mostra o que falta instalar, com o comando de cada sistema. Só depois do seu ok ela instala e testa o modelo grátis. Em seguida combina com você o recorte e as frentes, cria a pasta em `projetos/`, roda as etapas, confere os DOIs e abre a pasta e o `RELATORIO.html` na sua tela. As buscas e a leitura dos artigos rodam nos agentes grátis do opencode; a IA que conversa com você confere, corrige e junta. Se algum PDF não baixar, ela mostra o nome do arquivo e espera você salvar em `pdfs/`; depois continua de onde parou.
 
@@ -99,7 +101,7 @@ Tema: *sensoriamento remoto multissensorial aplicado à estimativa de biomassa e
 - Dos 47 artigos abertos, o download automático trouxe 41 (os da MDPI vêm do CDN aberto `mdpi-res.com`, porque o domínio `www.mdpi.com` bloqueia script). Os 6 que faltaram são da Elsevier, da Taylor & Francis e da Springer, que bloqueiam download por script; estão em `exemplo/pdfs/FALTANDO.md`, com o nome que o arquivo deve ter se alguém salvar à mão.
 - 42 artigos foram lidos por inteiro e resumidos, 2 agentes por vez, cerca de 1 minuto cada: [`exemplo/resumos/`](exemplo/resumos/). Um deles (Saim et al., 2025) foi lido numa execução anterior, quando o PDF ainda baixava.
 - Na frente de radar e LiDAR o agente ficou sem a busca na web e buscou direto nas APIs do Crossref e do OpenAlex; o resultado tem a mesma qualidade.
-- **Veja o resultado no navegador:** https://victorgit10.github.io/levantamento-ia/exemplo.html (o mesmo `RELATORIO.html` que a IA abre na sua tela no fim). Em texto, comece por [`exemplo/TABELA.md`](exemplo/TABELA.md).
+- **Veja o resultado do exemplo do repositório original no navegador:** https://victorgit10.github.io/levantamento-ia/exemplo.html (o mesmo `RELATORIO.html` que a IA abre na sua tela no fim). Em texto, comece por [`exemplo/TABELA.md`](exemplo/TABELA.md).
 
 ## Como funciona
 
@@ -118,7 +120,7 @@ O `AGENTS.md` descreve o contrato de conversa e de arquivos para a IA. O `modelo
 Precisa de Python 3.10+ e Node.js. O `conferir.py` diz o que falta, sem instalar nada:
 
 ```bash
-git clone https://github.com/VictorGit10/levantamento-ia
+git clone https://github.com/Lanamara/levantamento-ia
 cd levantamento-ia
 python --version   # no Windows, também py -3 --version; no Mac/Linux, python3 --version
 python ferramentas/conferir.py
@@ -224,4 +226,4 @@ docs/          o site (GitHub Pages)
 
 **Testes:** `python -m pytest -q` (não usa a rede).
 
-Código sob licença MIT. Feito por Victor Amaral (LAPIG/UFG), com Claude Code e DeepSeek.
+Código sob licença MIT. Ferramenta original de Victor Amaral (LAPIG/UFG), feita com Claude Code e DeepSeek. Adaptações para o doutorado: Lana Teixeira.

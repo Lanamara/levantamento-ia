@@ -26,9 +26,9 @@ frente que saiu errada. Se o opencode não der, siga "Quando o opencode não der
 
 1. Se você já está dentro da pasta do repositório (clone ou ZIP), pule para o item
    2. Se não, clone com
-   `git clone https://github.com/VictorGit10/levantamento-ia` e entre na pasta. Sem
+   `git clone https://github.com/Lanamara/levantamento-ia` e entre na pasta. Sem
    git, baixe o ZIP
-   `https://github.com/VictorGit10/levantamento-ia/archive/refs/heads/main.zip`
+   `https://github.com/Lanamara/levantamento-ia/archive/refs/heads/main.zip`
    e descompacte.
 2. Antes de rodar o `conferir.py`, verifique o Python: `python --version` (no
    Windows, também `py -3 --version`; no Mac/Linux, `python3 --version`). Se
