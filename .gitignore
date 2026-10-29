@@ -1,5 +1,7 @@
 # Levantamentos feitos com o repositório: ficam só na máquina da pessoa.
-projetos/
+projetos/*
+# Exceção: o levantamento do doutorado fica no Git para a atualização mensal (GitHub Actions).
+!projetos/doutorado-silvicultura-go/
 .venv/
 
 # Logs dos agentes e texto integral dos artigos (direitos autorais): não publicar.

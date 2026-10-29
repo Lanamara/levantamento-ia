@@ -1,0 +1,53 @@
+ALMEIDA, C. T. de et al. Integration of LiDAR and hyperspectral data for land use/land cover mapping in tropical forests. São José dos Campos: INPE, 2020. Disponível em: https://mtc-m21c.sid.inpe.br/col/sid.inpe.br/mtc-m21c/2020/04.03.20.59/doc/publicacao.pdf. Acesso em: 03 out. 2025.
+
+BACCINI, A. et al. Estimated carbon dioxide emissions from tropical deforestation improved by carbon-density maps. Nature Climate Change, v. 2, p. 182–185, 2012. DOI: https://doi.org/10.1038/nclimate1354.
+
+BARROS, Q. S. et al. Utilização de drones em estudos florestais: uma revisão. Diversitas Journal, v. 9, n. 1, p. 188–204, 2024. DOI: https://doi.org/10.17648/diversitas-journal-v9n1-1887.
+
+BRASIL. Ministério da Agricultura, Pecuária e Abastecimento. Plano Setorial para Adaptação à Mudança do Clima e Baixa Emissão de Carbono na Agropecuária 2020-2030: Plano Operacional. Secretaria de Inovação, Desenvolvimento Rural e Irrigação. Brasília: MAPA/DEPROS, 2021. 133 p.
+
+CANO, E. J.; MARCATO JÚNIOR, J. Geotecnologias aplicadas à modelagem ambiental: integração de dados multissensores no Google Earth Engine. Revista Brasileira de Geografia Física, v. 14, n. 4, p. 1813–1831, 2021.
+
+CERIANI, R. et al. Hyperspectral and LiDAR space-borne data for assessing structure and above-ground biomass in mixed mountain forests. Remote Sensing of Environment, v. 305, p. 114906, 2025. DOI: https://doi.org/10.1016/j.rse.2024.114906.
+
+COOPER, S. et al. Combining simulated hyperspectral EnMAP and Landsat for mapping forest aboveground biomass using lidar-based reference. ISPRS Journal of Photogrammetry and Remote Sensing, v. 174, p. 13–27, 2021. DOI: https://doi.org/10.1016/j.isprsjprs.2021.01.003.
+
+COSTA, J. D. M.; QUINTANILHA, J. A. Uso das geotecnologias na estimativa de biomassa e carbono florestal: uma revisão. Revista Brasileira de Geografia Física, v. 17, n. 2, p. 1127-1146, 2024. Disponível em: https://www.researchgate.net/publication/381183929. Acesso em: 05 out. 2025.
+
+CREPANI, E. et al. Sensoriamento remoto e geoprocessamento aplicados ao zoneamento ecológico-econômico e ao ordenamento territorial. São José dos Campos: INPE, 2001.
+
+EDUCAPES. Aplicações do LiDAR para o inventário florestal – enfoque unidade de área. Brasília: CAPES, 2022. Disponível em: https://educapes.capes.gov.br/bitstream/capes/704098/1/Aplicacoes-do-LiDAR-para-o-inventario-florestal.pdf. Acesso em: 05 out. 2025.
+
+EMBRAPA. Uso do LiDAR na estimativa de atributos florestais: uma revisão. Colombo: Embrapa Florestas, 2019. Disponível em: https://www.embrapa.br/busca-de-publicacoes/-/publicacao/1151658/uso-do-lidar-na-estimativa-de-atributos-florestais-uma-revisao. Acesso em: 03 out. 2025.
+
+FAO – Food and Agriculture Organization of the United Nations. The State of the World's Forests 2020: forests, biodiversity and people. Rome: FAO, 2020. Disponível em: https://www.fao.org/publications.
+
+GOIÁS. Decreto nº 9.891, de 22 de junho de 2021 (Alterado pelo Decreto nº 10.683, de 22 de abril de 2025). Institui o Plano Estadual de Mitigação/Adaptação às Mudanças Climáticas e Sustentabilidade na Agropecuária. Diário Oficial do Estado de Goiás, Goiânia, GO, 2025.
+
+GOIÁS. Secretaria de Estado de Agricultura, Pecuária e Abastecimento (SEAPA). Resolução nº 001, de 23 de janeiro de 2025. Dispõe sobre o Regimento interno do Grupo Gestor Estadual do Plano Setorial para Adaptação à Mudança do Clima e Baixa Emissão de Carbono na Agropecuária do Estado de Goiás. Goiânia: SEAPA, 2025.
+
+GOIÁS. Secretaria de Estado de Agricultura, Pecuária e Abastecimento (SEAPA). Plano ABC+ Goiás. Goiânia: SEAPA, 2021. Disponível em: https://goias.gov.br/agricultura/plano-abc-goias/. Acesso em: 15 jun. 2026.
+
+GORELICK, N. et al. Google Earth Engine: Planetary-scale geospatial analysis for everyone. Remote Sensing of Environment, v. 202, p. 18–27, 2017.
+
+IBÁ – INDÚSTRIA BRASILEIRA DE ÁRVORES. Relatório Anual 2023. Brasília: IBÁ, 2023. Disponível em: https://www.arefloresta.org.br/noticia/422/relatorio-anual-de-florestas-plantadas-2023-iba. Acesso em: 03 out. 2025.
+
+IMB – INSTITUTO MAURO BORGES. Goiás em dados – 2022. Goiânia: IMB, 2022. Disponível em: https://www.imb.go.gov.br/. Acesso em: 03 out. 2025.
+
+JACON, A. D. et al. Aboveground biomass estimates over Brazilian savannas using hyperspectral remote sensing. International Journal of Remote Sensing, v. 42, n. 23, p. 8852–8871, 2021. DOI: https://doi.org/10.1080/01431161.2021.1969630.
+
+LI, W. et al. Mapping forest age from space using machine learning and time series data. Remote Sensing of Environment, v. 280, p. 113195, 2022. DOI: https://doi.org/10.1016/j.rse.2022.113195.
+
+MAPBIOMAS. Projeto MapBiomas Brasil – Coleção 9. São Paulo: MapBiomas, 2023. Disponível em: https://mapbiomas.org/. Acesso em: 03 out. 2025.
+
+MARCELINO, E. H. B. Efeitos econômicos e ecológicos da substituição de uso do solo por plantios de eucalipto. Dissertação (Mestrado em Agronegócio) – Escola de Agronegócio, Universidade Federal de Goiás, Goiânia, 2024.
+
+MARTINS-NETO, R. P. et al. Tree Species Classification in a Complex Brazilian Tropical Forest Using Hyperspectral and LiDAR Data. Forests, v. 14, n. 5, p. 945, 2023. DOI: https://doi.org/10.3390/f14050945.
+
+ROSS, J. L. S. Análise empírica da fragilidade dos ambientes naturais e antropizados. Revista do Departamento de Geografia, n. 8, p. 63–74, 1994.
+
+ROSS, J. L. S. Ecogeografia do Brasil: subsídios para o planejamento ambiental. São Paulo: Oficina de Textos, 2012.
+
+SANTANA, C. A. M. et al. Cerrado: pilar da agricultura brasileira. In: DINÂMICA AGRÍCOLA NO CERRADO: análises e projeções. Brasília: Embrapa, 2020. p. 39-58. Disponível em: https://www.alice.cnptia.embrapa.br/alice/bitstream/doc/1121716/1/LVDINAMICAAGRICOLACERRADO2020.pdf. Acesso em: 05 out. 2025.
+
+TEODORO, L. P. R. et al. Eucalyptus species discrimination using hyperspectral sensor data and machine learning. Forests, v. 15, n. 1, p. 39, 2024. DOI: https://doi.org/10.3390/f15010039.

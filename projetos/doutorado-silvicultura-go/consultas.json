@@ -1,0 +1,13 @@
+{
+ "desde": "2026-10-29",
+ "tipos": "article|review|data-paper",
+ "janela_dias": 60,
+ "frentes": {
+  "1-hiperespectral": "(\"PRISMA satellite\" OR \"PRISMA hyperspectral\" OR EnMAP OR \"spaceborne hyperspectral\" OR \"hyperspectral satellite\") AND (forest OR plantation OR eucalyptus OR savanna OR biomass)",
+  "2-lidar-referencia": "(GEDI OR \"ICESat-2\") AND (biomass OR \"canopy height\") AND (plantation OR eucalyptus OR savanna OR Cerrado OR Brazil)",
+  "3-fusao-ml": "(\"random forest\" OR XGBoost OR \"deep learning\" OR \"convolutional neural network\") AND (\"aboveground biomass\" OR \"carbon stock\") AND (plantation OR eucalyptus OR \"planted forest\")",
+  "4-idade-produtividade": "(\"stand age\" OR \"forest age\" OR \"plantation age\" OR \"time series\") AND (Landsat OR \"Sentinel-2\") AND (eucalyptus OR \"forest plantation\" OR pine)",
+  "5-fragilidade-ahp": "(\"environmental fragility\" OR \"fragilidade ambiental\" OR \"land suitability\" OR \"ecological vulnerability\") AND (AHP OR \"analytic hierarchy process\" OR multicriteria OR silviculture OR eucalyptus OR Cerrado)",
+  "6-goias-seringueira": "(Goiás OR Goias OR Cerrado) AND (eucalyptus OR eucalipto OR \"rubber tree\" OR Hevea OR seringueira OR silvicultura OR silviculture OR \"planted forest\")"
+ }
+}
