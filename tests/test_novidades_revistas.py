@@ -337,3 +337,51 @@ def test_conferir_citacoes_le_docx(tmp_path):
     assert conferir_citacoes.main([str(arq), str(saida)]) == 0
     md = saida.read_text(encoding="utf-8")
     assert "OK: 1" in md and "MESMO-AUTOR-ANO: 1" in md
+
+
+# --- lacunas ----------------------------------------------------------------
+
+import lacunas  # noqa: E402
+
+RESUMO_LAC = """# RELATÓRIO — Silva (2024)
+
+## 1. Referência
+Silva et al. GEDI and Sentinel-2 for eucalyptus biomass.
+
+## 2. Pergunta do estudo
+Estimar biomassa de eucalipto [p. 2].
+
+## 3. Área e dados
+- Local: Minas Gerais, Brasil; nenhum sítio em Goiás [p. 3].
+- Sensores: GEDI L4A e Sentinel-2 [p. 3].
+
+## 4. Método
+- Random Forest e aprendizado profundo (CNN) [p. 4].
+
+## 5. Resultados principais
+- Contexto do estudo [p. 5].
+- Melhor modelo: R² 0,81 e RMSE 18 Mg/ha [p. 6].
+
+## 7. O que serve ao projeto e o que não serve
+- Não serve: não usa PRISMA nem trata de Pinus [p. 7].
+"""
+
+
+def test_lacunas_marca_sem_negacoes_e_sem_secao_7(tmp_path):
+    (tmp_path / "resumos" / "silva2024").mkdir(parents=True)
+    (tmp_path / "resumos" / "silva2024" / "RELATORIO.md").write_text(RESUMO_LAC, encoding="utf-8")
+    l = lacunas.analisar(tmp_path)[0]
+    assert set(l["sensores"]) == {"GEDI", "Sentinel-2"}
+    assert "Eucalipto" in l["plantios"] and "Pinus" not in l["plantios"]
+    assert "Goiás" not in l["regioes"] and "Brasil" in l["regioes"]
+    assert {"Random Forest", "Redes neurais/deep learning"} <= set(l["metodos"])
+    assert l["metrica"].startswith("Melhor modelo: R² 0,81")
+
+
+def test_lacunas_grava_matrizes(tmp_path):
+    (tmp_path / "resumos" / "silva2024").mkdir(parents=True)
+    (tmp_path / "resumos" / "silva2024" / "RELATORIO.md").write_text(RESUMO_LAC, encoding="utf-8")
+    assert lacunas.main([str(tmp_path)]) == 0
+    md = (tmp_path / "LACUNAS.md").read_text(encoding="utf-8")
+    assert "| GEDI × Eucalipto | 1 | silva2024 |" in md
+    assert "Sensor × variável estimada" in md
