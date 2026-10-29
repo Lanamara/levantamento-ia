@@ -8,9 +8,9 @@ BRASIL. Ministério da Agricultura, Pecuária e Abastecimento. Plano Setorial pa
 
 CANO, E. J.; MARCATO JÚNIOR, J. Geotecnologias aplicadas à modelagem ambiental: integração de dados multissensores no Google Earth Engine. Revista Brasileira de Geografia Física, v. 14, n. 4, p. 1813–1831, 2021.
 
-CERIANI, R. et al. Hyperspectral and LiDAR space-borne data for assessing structure and above-ground biomass in mixed mountain forests. Remote Sensing of Environment, v. 305, p. 114906, 2025. DOI: https://doi.org/10.1016/j.rse.2024.114906.
+CERIANI, R. et al. Hyperspectral and LiDAR space-borne data for assessing mountain forest volume and biomass. International Journal of Applied Earth Observation and Geoinformation, v. 141, p. 104614, 2025. DOI: https://doi.org/10.1016/j.jag.2025.104614.
 
-COOPER, S. et al. Combining simulated hyperspectral EnMAP and Landsat for mapping forest aboveground biomass using lidar-based reference. ISPRS Journal of Photogrammetry and Remote Sensing, v. 174, p. 13–27, 2021. DOI: https://doi.org/10.1016/j.isprsjprs.2021.01.003.
+COOPER, S. et al. Combining simulated hyperspectral EnMAP and Landsat time series for forest aboveground biomass mapping. International Journal of Applied Earth Observation and Geoinformation, 2021. DOI: https://doi.org/10.1016/j.jag.2021.102307.
 
 COSTA, J. D. M.; QUINTANILHA, J. A. Uso das geotecnologias na estimativa de biomassa e carbono florestal: uma revisão. Revista Brasileira de Geografia Física, v. 17, n. 2, p. 1127-1146, 2024. Disponível em: https://www.researchgate.net/publication/381183929. Acesso em: 05 out. 2025.
 
@@ -34,7 +34,7 @@ IBÁ – INDÚSTRIA BRASILEIRA DE ÁRVORES. Relatório Anual 2023. Brasília: IB
 
 IMB – INSTITUTO MAURO BORGES. Goiás em dados – 2022. Goiânia: IMB, 2022. Disponível em: https://www.imb.go.gov.br/. Acesso em: 03 out. 2025.
 
-JACON, A. D. et al. Aboveground biomass estimates over Brazilian savannas using hyperspectral remote sensing. International Journal of Remote Sensing, v. 42, n. 23, p. 8852–8871, 2021. DOI: https://doi.org/10.1080/01431161.2021.1969630.
+JACON, A. D. et al. Aboveground biomass estimates over Brazilian savannas using hyperspectral metrics and machine learning models: experiences with Hyperion/EO-1. GIScience & Remote Sensing, v. 58, n. 7, 2021. DOI: https://doi.org/10.1080/15481603.2021.1969630.
 
 LI, W. et al. Mapping forest age from space using machine learning and time series data. Remote Sensing of Environment, v. 280, p. 113195, 2022. DOI: https://doi.org/10.1016/j.rse.2022.113195.
 
