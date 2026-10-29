@@ -1,4 +1,4 @@
-# Levantamento bibliográfico do doutorado — Lana Teixeira (PPGCA/UFG)
+# Levantamento bibliográfico do doutorado — Lana Teixeira (PPGCIAMB/UFG)
 
 Levantamento e acompanhamento da literatura para a tese *Sensoriamento remoto multissensorial aplicado à estimativa de biomassa e estoque de carbono da silvicultura no estado de Goiás*.
 
@@ -8,7 +8,7 @@ Ferramenta original: [VictorGit10/levantamento-ia](https://github.com/VictorGit1
 
 ## Neste fork
 
-Fork de [VictorGit10/levantamento-ia](https://github.com/VictorGit10/levantamento-ia) para o doutorado de Lana Teixeira (PPGCA/UFG), com estes acréscimos:
+Fork de [VictorGit10/levantamento-ia](https://github.com/VictorGit10/levantamento-ia) para o doutorado de Lana Teixeira (PPGCIAMB/UFG), com estes acréscimos:
 
 | O quê | Onde | Como |
 |---|---|---|

@@ -5,7 +5,7 @@
 **Recorte:** Brasil e Cerrado (Goiás em destaque), florestas plantadas (eucalipto, pinus, seringueira), sensoriamento remoto orbital; artigos revisados por pares, relatórios e bases oficiais, de preferência 2020–2026
 **Data:** 29/10/2026
 **Pasta:** `projetos/doutorado-silvicultura-go/`
-**Base:** pré-projeto de doutorado (PPGCA/UFG), versão de 29/06/2026 — hipóteses H1 a H4 e etapas 1 a 5 da metodologia
+**Base:** pré-projeto de doutorado (PPGCIAMB/UFG), versão de 29/06/2026 — hipóteses H1 a H4 e etapas 1 a 5 da metodologia
 
 ## Frentes
 
