@@ -1,0 +1,19 @@
+{
+ "PEVS (IBGE, tabela 5930)": {
+  "tipo": "ibge",
+  "agregado": 5930,
+  "versao_usada": 2025
+ },
+ "MapBiomas Brasil (coleção)": {
+  "tipo": "pagina",
+  "url": "https://brasil.mapbiomas.org/",
+  "padrao": "(?:Cole[çc][ãa]o|Collection)\\s+(\\d{1,2})\\b",
+  "versao_usada": 11
+ },
+ "TerraClass Cerrado (ano mapeado)": {
+  "tipo": "pagina",
+  "url": "https://www.terraclass.gov.br/",
+  "padrao": "Cerrado\\D{0,30}(20\\d{2})",
+  "versao_usada": 2024
+ }
+}

@@ -425,3 +425,35 @@ def test_buscar_autor_nao_encontrado_vira_erro(tmp_path):
     novas, avisos = atualizar.buscar(cfg, "2026-10-29", datetime.date(2026, 11, 1), set(), FontesFalsas(), {},
                                      get=lambda url, e, k: {"authorships": []})
     assert not novas and avisos[0].startswith("ERRO autor: Ana Silva")
+
+
+# --- bases ------------------------------------------------------------------
+
+import bases  # noqa: E402
+
+
+def test_versao_ibge_e_pagina():
+    periodos = json.dumps([{"id": "2023"}, {"id": "2025"}, {"id": "2024"}])
+    assert bases.versao_ibge(5930, baixar=lambda u: periodos) == 2025
+    pagina = "<p>Coleção 10</p><h1>Lançamento da Cole&ccedil;&atilde;o 12</h1> Collection 11"
+    assert bases.versao_pagina("x", r"(?:Cole[çc][ãa]o|Collection)\s+(\d{1,2})\b", baixar=lambda u: pagina) == 12
+
+
+def test_verificar_estados_e_aviso(tmp_path):
+    cfg = {"PEVS": {"tipo": "ibge", "agregado": 5930, "versao_usada": 2025},
+           "MB": {"tipo": "pagina", "url": "https://mb", "padrao": r"Coleção\s+(\d+)", "versao_usada": 11},
+           "TC": {"tipo": "pagina", "url": "https://tc", "padrao": r"Cerrado\D{0,30}(20\d{2})", "versao_usada": 2024}}
+
+    def baixar(url):
+        if "ibge" in url:
+            return json.dumps([{"id": "2025"}, {"id": "2026"}])
+        if url == "https://mb":
+            return "Coleção 11"
+        raise OSError("fora do ar")
+
+    linhas = bases.verificar(cfg, baixar)
+    assert [l["estado"] for l in linhas] == ["NOVA", "ATUAL", "NAO-VERIFICADO"]
+    novas = bases.gravar(tmp_path, linhas, "2026-11-01")
+    assert len(novas) == 1 and "PEVS" in (tmp_path / "bases_aviso.txt").read_text(encoding="utf-8")
+    bases.gravar(tmp_path, [dict(linhas[1])], "2026-12-01")
+    assert not (tmp_path / "bases_aviso.txt").exists()

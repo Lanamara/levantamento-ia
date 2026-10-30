@@ -7,6 +7,12 @@
 #   OPENALEX_API_KEY  chave gratuita do OpenAlex (aumenta o limite diário)
 #   OPENALEX_EMAIL    e-mail enviado no parâmetro mailto
 # Qualis: se existir projetos/<projeto>/qualis.csv (exportado da Sucupira), ele é usado.
+#
+# Também verifica se saíram versões novas das bases (bases.json -> BASES.md).
+# Avisos no GitHub (aba Issues, que precisa estar ativada em Settings > Features):
+#   - execução agendada com trabalhos novos: um aviso com a contagem;
+#   - versão nova de uma base: um aviso (não repete enquanto o anterior estiver aberto).
+# O GitHub manda e-mail para quem acompanha o repositório.
 name: Atualização mensal do levantamento
 
 on:
@@ -25,6 +31,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   atualizar:
@@ -44,12 +51,20 @@ jobs:
         run: python -m pip install -r requirements.txt
 
       - name: Buscar trabalhos novos
+        id: busca
         run: |
           QUALIS=""
           if [ -f "$PROJETO/qualis.csv" ]; then QUALIS="--qualis $PROJETO/qualis.csv"; fi
           DESDE=""
           if [ -n "${{ inputs.desde }}" ]; then DESDE="--desde ${{ inputs.desde }}"; fi
-          python ferramentas/atualizar.py "$PROJETO" --email "$OPENALEX_EMAIL" $QUALIS $DESDE
+          python ferramentas/atualizar.py "$PROJETO" --email "$OPENALEX_EMAIL" $QUALIS $DESDE | tee busca.log
+          N=$(grep -oE '^[0-9]+ trabalhos novos nesta busca' busca.log | grep -oE '^[0-9]+' || echo 0)
+          echo "novos=${N:-0}" >> "$GITHUB_OUTPUT"
+
+      - name: Verificar versões das bases de dados
+        continue-on-error: true
+        run: |
+          if [ -f "$PROJETO/bases.json" ]; then python ferramentas/bases.py "$PROJETO"; fi
 
       - name: Refazer o RELATORIO.html (se o levantamento já existir)
         run: |
@@ -66,4 +81,26 @@ jobs:
           else
             git commit -m "Atualização mensal: novidades de $(date -u +%Y-%m-%d)"
             git push
+          fi
+
+      - name: Avisar no GitHub
+        if: ${{ github.event_name == 'schedule' || inputs.gravar }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOVOS: ${{ steps.busca.outputs.novos }}
+        run: |
+          SITE="https://lanamara.github.io/levantamento-ia/$PROJETO/RELATORIO.html"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "${NOVOS:-0}" -gt 0 ]; then
+            gh issue create --title "Novidades de $(date -u +%m/%Y): $NOVOS trabalho(s)" \
+              --body "A atualização mensal encontrou $NOVOS trabalho(s) novo(s). Veja $PROJETO/NOVIDADES.md ou a seção Novidades em $SITE" \
+              || echo "Não consegui abrir o aviso (a aba Issues está ativada?)"
+          fi
+          if [ -f "$PROJETO/bases_aviso.txt" ]; then
+            ABERTOS=$(gh issue list --state open --search "in:title Versão nova de base" --json number --jq length || echo 0)
+            if [ "${ABERTOS:-0}" -eq 0 ]; then
+              gh issue create --title "Versão nova de base de dados" \
+                --body "$(cat "$PROJETO/bases_aviso.txt"; echo; echo "Detalhes em $PROJETO/BASES.md. Depois de atualizar o projeto, mude versao_usada em bases.json e feche este aviso.")" \
+                || echo "Não consegui abrir o aviso (a aba Issues está ativada?)"
+            fi
           fi

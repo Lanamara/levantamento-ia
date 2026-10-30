@@ -17,6 +17,7 @@ Fork de [VictorGit10/levantamento-ia](https://github.com/VictorGit10/levantament
 | Conferência das suas referências | `ferramentas/conferir_lista.py` | confere título, ano, volume e páginas no Crossref; sugere DOI (OpenAlex) só quando título e ano batem; grava `MINHAS_REFERENCIAS.md` |
 | Citações x lista de referências | `ferramentas/conferir_citacoes.py` | lê um `.docx` (ou `.txt`/`.md`) e aponta citação sem referência, ano diferente, referência nunca citada e mesmo autor/ano sem letra (2025a, 2025b) |
 | Mapa de lacunas | `ferramentas/lacunas.py` | marca em cada resumo sensor, variável, plantio, região e método (seções 1 a 4, ignorando menções negadas) e grava `LACUNAS.md` com as matrizes e as combinações centrais do projeto, e `lacunas.csv` |
+| Versões das bases | `ferramentas/bases.py`, `projetos/.../bases.json` | todo mês confere se saiu PEVS nova (API de agregados do IBGE), coleção nova do MapBiomas ou ano novo do TerraClass Cerrado (páginas oficiais); grava `BASES.md` e abre um aviso na aba Issues |
 | Relatório com filtros | `ferramentas/publicar.py`, `modelos/relatorio.html` | filtros por frente, indicador da revista e "já cito"; retratados em vermelho; seção Novidades |
 | Atualização mensal | `ferramentas/atualizar.py`, `.github/workflows/atualizar.yml` | busca no OpenAlex o que foi publicado desde a última vez, com as consultas de `consultas.json` (por tema e por autor); grava `NOVIDADES.md` |
 
