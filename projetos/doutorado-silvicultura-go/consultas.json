@@ -9,5 +9,47 @@
   "4-idade-produtividade": "(\"stand age\" OR \"forest age\" OR \"plantation age\" OR \"time series\") AND (Landsat OR \"Sentinel-2\") AND (eucalyptus OR \"forest plantation\" OR pine)",
   "5-fragilidade-ahp": "(\"environmental fragility\" OR \"fragilidade ambiental\" OR \"land suitability\" OR \"ecological vulnerability\") AND (AHP OR \"analytic hierarchy process\" OR multicriteria OR silviculture OR eucalyptus OR Cerrado)",
   "6-goias-seringueira": "(Goiás OR Goias OR Cerrado) AND (eucalyptus OR eucalipto OR \"rubber tree\" OR Hevea OR seringueira OR silvicultura OR silviculture OR \"planted forest\")"
+ },
+ "autores": {
+  "Lênio Soares Galvão": {
+   "doi": "10.1080/15481603.2021.1969630",
+   "frente": "1-hiperespectral"
+  },
+  "Ricardo Dalagnol": {
+   "doi": "10.1080/15481603.2021.1969630",
+   "frente": "1-hiperespectral"
+  },
+  "Ibrahim Fayad": {
+   "doi": "10.1109/jstars.2021.3092836",
+   "frente": "2-lidar-referencia"
+  },
+  "Nicolas Baghdadi": {
+   "doi": "10.1109/jstars.2021.3092836",
+   "frente": "2-lidar-referencia"
+  },
+  "Ralph Dubayah": {
+   "doi": "10.1088/1748-9326/ac8694",
+   "frente": "2-lidar-referencia"
+  },
+  "Aliny Aparecida dos Reis": {
+   "doi": "10.1186/s40490-017-0108-0",
+   "frente": "4-idade-produtividade"
+  },
+  "Guerric le Maire": {
+   "doi": "10.1109/jstars.2021.3092836",
+   "frente": "4-idade-produtividade"
+  },
+  "Luciano Cavalcante de Jesus França": {
+   "doi": "10.5380/rf.v50i3.65146",
+   "frente": "5-fragilidade-ahp"
+  },
+  "Eder Pereira Miguel": {
+   "doi": "10.3390/f15081332",
+   "frente": "6-goias-seringueira"
+  },
+  "Alcides Gatto": {
+   "doi": "10.3390/f15081332",
+   "frente": "6-goias-seringueira"
+  }
  }
 }

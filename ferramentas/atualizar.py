@@ -8,8 +8,14 @@ Lê <pasta>/consultas.json:
       "desde": "2026-10-29",                 # data do levantamento inicial
       "tipos": "article|review|data-paper",  # tipos de trabalho do OpenAlex
       "janela_dias": 60,                      # sobreposição com a busca anterior
-      "frentes": {"1-hiperespectral": "(PRISMA OR EnMAP) AND biomass", ...}
+      "frentes": {"1-hiperespectral": "(PRISMA OR EnMAP) AND biomass", ...},
+      "autores": {"Ralph Dubayah": {"doi": "10.1088/1748-9326/ac8694", "frente": "2-lidar-referencia"}}
     }
+
+Autores (opcional): o identificador de cada autor no OpenAlex é tirado de um
+artigo do levantamento em que ele aparece (`doi`), comparando o primeiro e o
+último nome; assim não há confusão com homônimos. Os trabalhos novos entram com
+a frente "autor: <nome>".
 
 Para cada frente, consulta /works com search.title_and_abstract e o filtro
 from_publication_date. Como o filtro por data de entrada na base é pago,
@@ -32,6 +38,7 @@ import datetime
 import json
 import re
 import sys
+import unicodedata
 import urllib.parse
 from pathlib import Path
 
@@ -115,6 +122,29 @@ def linha_do_work(w, frente, hoje, fontes, qualis):
     }
 
 
+def sem_acento(t):
+    return "".join(c for c in unicodedata.normalize("NFD", t or "") if unicodedata.category(c) != "Mn").lower()
+
+
+def id_do_autor(nome, doi, fontes, get=revistas.get_json):
+    """ID do autor no OpenAlex, achado nas autorias do artigo `doi` (primeiro e último nome batem)."""
+    partes = [x for x in re.split(r"[\s.\-]+", sem_acento(nome)) if len(x) > 1]
+    primeiro, ultimo = partes[0], partes[-1]
+    w = get("https://api.openalex.org/works/doi:" + urllib.parse.quote(doi), fontes.email, fontes.api_key)
+    for a in w.get("authorships") or []:
+        exib = sem_acento((a.get("author") or {}).get("display_name"))
+        if re.search(rf"\b{re.escape(ultimo)}\b", exib) and re.search(rf"\b{re.escape(primeiro)}", exib):
+            return (a["author"].get("id") or "").rsplit("/", 1)[-1]
+    return ""
+
+
+def url_autor(author_id, inicio, tipos):
+    filtro = f"authorships.author.id:{author_id},from_publication_date:{inicio}"
+    if tipos:
+        filtro += f",type:{tipos}"
+    return "https://api.openalex.org/works?" + urllib.parse.urlencode({"filter": filtro, "per_page": POR_PAGINA})
+
+
 def buscar(cfg, inicio, hoje, conhecidos, fontes, qualis, get=revistas.get_json):
     """(novas linhas, avisos). Um DOI encontrado em duas frentes fica na primeira."""
     novas, avisos, vistos = [], [], set(conhecidos)
@@ -138,6 +168,28 @@ def buscar(cfg, inicio, hoje, conhecidos, fontes, qualis, get=revistas.get_json)
             novas.append(linha_do_work(w, frente, hoje, fontes, qualis))
             n += 1
         print(f"{frente}: {total} resultados desde {inicio}, {n} novos", flush=True)
+    tipos = cfg.get("tipos", "article|review|data-paper")
+    for nome, info in (cfg.get("autores") or {}).items():
+        rotulo = f"autor: {nome}"
+        try:
+            aid = id_do_autor(nome, info["doi"], fontes, get)
+            if not aid:
+                avisos.append(f"ERRO {rotulo}: autor não encontrado no artigo {info['doi']}")
+                continue
+            dados = get(url_autor(aid, inicio, tipos), fontes.email, fontes.api_key)
+        except Exception as e:
+            avisos.append(f"ERRO {rotulo}: {type(e).__name__}: {e}")
+            continue
+        n = 0
+        for w in dados.get("results") or []:
+            d = doi_do_work(w)
+            if not d or d in vistos:
+                continue
+            vistos.add(d)
+            novas.append(linha_do_work(w, rotulo, hoje, fontes, qualis))
+            n += 1
+        total = (dados.get("meta") or {}).get("count") or 0
+        print(f"{rotulo} ({aid}): {total} trabalhos desde {inicio}, {n} novos", flush=True)
     return novas, avisos
 
 

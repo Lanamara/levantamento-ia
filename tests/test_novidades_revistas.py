@@ -385,3 +385,43 @@ def test_lacunas_grava_matrizes(tmp_path):
     md = (tmp_path / "LACUNAS.md").read_text(encoding="utf-8")
     assert "| GEDI × Eucalipto | 1 | silva2024 |" in md
     assert "Sensor × variável estimada" in md
+
+
+# --- atualizar: autores --------------------------------------------------------
+
+def test_id_do_autor_casa_primeiro_e_ultimo_nome():
+    w = {"authorships": [
+        {"author": {"id": "https://openalex.org/A1", "display_name": "Lênio S. Galvão"}},
+        {"author": {"id": "https://openalex.org/A2", "display_name": "Aliny Aparecida dos Reis"}},
+        {"author": {"id": "https://openalex.org/A3", "display_name": "Maria Galvão"}}]}
+    get = lambda url, e, k: w
+    assert atualizar.id_do_autor("Lênio Soares Galvão", "10.1/x", FontesFalsas(), get) == "A1"
+    assert atualizar.id_do_autor("Aliny Aparecida dos Reis", "10.1/x", FontesFalsas(), get) == "A2"
+    assert atualizar.id_do_autor("Ralph Dubayah", "10.1/x", FontesFalsas(), get) == ""
+
+
+def test_buscar_inclui_autores_com_rotulo(tmp_path):
+    p = projeto(tmp_path)
+    cfg = atualizar.ler_consultas(p)
+    cfg["autores"] = {"Ana Silva": {"doi": "10.1/artigo"}}
+
+    def get(url, email, key):
+        if "/works/doi:" in url:
+            return {"authorships": [{"author": {"id": "https://openalex.org/A9", "display_name": "Ana Silva"}}]}
+        if "authorships.author.id%3AA9" in url:
+            return {"meta": {"count": 2}, "results": [work("10.1/novo"), work("10.1/do-autor")]}
+        return {"meta": {"count": 1}, "results": [work("10.1/novo")]}
+
+    novas, avisos = atualizar.buscar(cfg, "2026-10-29", datetime.date(2026, 11, 1),
+                                     set(), FontesFalsas(), {}, get=get)
+    assert [(n["doi"], n["frente"]) for n in novas] == [("10.1/novo", "1-a"), ("10.1/do-autor", "autor: Ana Silva")]
+    assert not avisos
+
+
+def test_buscar_autor_nao_encontrado_vira_erro(tmp_path):
+    cfg = atualizar.ler_consultas(projeto(tmp_path))
+    cfg["frentes"] = {}
+    cfg["autores"] = {"Ana Silva": {"doi": "10.1/artigo"}}
+    novas, avisos = atualizar.buscar(cfg, "2026-10-29", datetime.date(2026, 11, 1), set(), FontesFalsas(), {},
+                                     get=lambda url, e, k: {"authorships": []})
+    assert not novas and avisos[0].startswith("ERRO autor: Ana Silva")

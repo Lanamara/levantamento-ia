@@ -18,7 +18,7 @@ Fork de [VictorGit10/levantamento-ia](https://github.com/VictorGit10/levantament
 | Citações x lista de referências | `ferramentas/conferir_citacoes.py` | lê um `.docx` (ou `.txt`/`.md`) e aponta citação sem referência, ano diferente, referência nunca citada e mesmo autor/ano sem letra (2025a, 2025b) |
 | Mapa de lacunas | `ferramentas/lacunas.py` | marca em cada resumo sensor, variável, plantio, região e método (seções 1 a 4, ignorando menções negadas) e grava `LACUNAS.md` com as matrizes e as combinações centrais do projeto, e `lacunas.csv` |
 | Relatório com filtros | `ferramentas/publicar.py`, `modelos/relatorio.html` | filtros por frente, indicador da revista e "já cito"; retratados em vermelho; seção Novidades |
-| Atualização mensal | `ferramentas/atualizar.py`, `.github/workflows/atualizar.yml` | busca no OpenAlex o que foi publicado desde a última vez, com as consultas de `consultas.json`; grava `NOVIDADES.md` |
+| Atualização mensal | `ferramentas/atualizar.py`, `.github/workflows/atualizar.yml` | busca no OpenAlex o que foi publicado desde a última vez, com as consultas de `consultas.json` (por tema e por autor); grava `NOVIDADES.md` |
 
 **Sobre "revista predatória".** Não existe lista aberta e oficial: a lista de Beall saiu do ar em 2017 e o Cabells Predatory Reports é pago. Por isso a tabela não rotula revistas como predatórias. Ela mostra fatos conferíveis (DOAJ, CWTS Core, Qualis, retratação) e marca "⚠ conferir" quando a revista não está em nenhuma dessas listas, o que pede uma conferência à mão, não uma condenação.
 
