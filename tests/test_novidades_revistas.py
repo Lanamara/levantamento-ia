@@ -470,3 +470,13 @@ def test_versao_ibge_usa_sidra_se_agregados_falhar():
         return sidra
 
     assert bases.versao_ibge(5930, baixar=baixar) == 2025
+
+
+def test_base_so_local_no_github(monkeypatch):
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    cfg = {"PEVS": {"tipo": "ibge", "agregado": 5930, "versao_usada": 2025, "so_local": True}}
+    linhas = bases.verificar(cfg, baixar=lambda u: (_ for _ in ()).throw(AssertionError("não deveria acessar")))
+    assert linhas[0]["estado"] == "CONFERIR-NO-COMPUTADOR"
+    monkeypatch.setenv("GITHUB_ACTIONS", "false")
+    linhas = bases.verificar(cfg, baixar=lambda u: json.dumps([{"id": "2025"}]))
+    assert linhas[0]["estado"] == "ATUAL"

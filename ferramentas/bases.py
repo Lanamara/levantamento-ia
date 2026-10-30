@@ -16,13 +16,17 @@ Lê <pasta>/bases.json:
   numérico) e compara o maior número encontrado com `versao_usada`.
 
 Estados: NOVA (saiu versão maior que a usada), ATUAL, NAO-VERIFICADO (a página
-ou a API não respondeu, ou o padrão não achou nada; confira à mão).
+ou a API não respondeu, ou o padrão não achou nada; confira à mão) e
+CONFERIR-NO-COMPUTADOR (base marcada com "so_local": true, como a PEVS: o IBGE
+recusa acessos dos servidores do GitHub, então ela só é conferida quando o script
+roda no computador, fora do GitHub Actions).
 Grava <pasta>/BASES.md e, se houver NOVA, <pasta>/bases_aviso.txt (usado pela
 atualização mensal para abrir um aviso no GitHub). Sai com 0 mesmo com NOVA.
 """
 import argparse
 import html
 import json
+import os
 import re
 import sys
 import time
@@ -78,8 +82,13 @@ def versao_pagina(url, padrao, baixar=baixar):
 
 def verificar(bases, baixar=baixar):
     linhas = []
+    no_github = os.environ.get("GITHUB_ACTIONS") == "true"
     for nome, cfg in bases.items():
         usada = cfg.get("versao_usada")
+        if cfg.get("so_local") and no_github:
+            linhas.append({"base": nome, "estado": "CONFERIR-NO-COMPUTADOR", "usada": usada, "achada": None,
+                           "fonte": "rode `python ferramentas/bases.py <pasta>` no computador", "erro": ""})
+            continue
         try:
             if cfg["tipo"] == "ibge":
                 achada = versao_ibge(cfg["agregado"], baixar)
