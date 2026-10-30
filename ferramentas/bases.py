@@ -25,6 +25,7 @@ import html
 import json
 import re
 import sys
+import time
 import urllib.request
 from pathlib import Path
 
@@ -34,15 +35,36 @@ from projeto import barrar_exemplo, opcao_exemplo  # noqa: E402
 UA = {"User-Agent": "levantamento-ia/1.0 (verificador de versões; uso acadêmico)"}
 
 
-def baixar(url):
-    req = urllib.request.Request(url, headers=UA)
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", errors="replace")
+def baixar(url, tentativas=3, timeout=60):
+    """Texto da URL; tenta de novo em caso de falha de rede (as APIs do IBGE oscilam)."""
+    ultimo = None
+    for i in range(tentativas):
+        try:
+            req = urllib.request.Request(url, headers=UA)
+            return urllib.request.urlopen(req, timeout=timeout).read().decode("utf-8", errors="replace")
+        except Exception as e:
+            ultimo = e
+            if i + 1 < tentativas:
+                time.sleep(5 * (i + 1))
+    raise ultimo
+
+
+def anos_sidra(texto):
+    """Anos na coluna 'Ano (Código)' de uma resposta da API do SIDRA (1.ª linha = cabeçalho)."""
+    linhas = json.loads(texto)
+    if not linhas:
+        return []
+    chaves = [k for k, v in linhas[0].items() if str(v).startswith("Ano") and "Código" in str(v)]
+    return [int(l[k]) for l in linhas[1:] for k in chaves if str(l.get(k, "")).isdigit()]
 
 
 def versao_ibge(agregado, baixar=baixar):
-    """Ano mais recente disponível numa tabela do IBGE (API de agregados v3)."""
-    periodos = json.loads(baixar(f"https://servicodados.ibge.gov.br/api/v3/agregados/{agregado}/periodos"))
-    anos = [int(p["id"]) for p in periodos if str(p.get("id", "")).isdigit()]
+    """Ano mais recente de uma tabela do IBGE: API de agregados v3 e, se falhar, API do SIDRA."""
+    try:
+        periodos = json.loads(baixar(f"https://servicodados.ibge.gov.br/api/v3/agregados/{agregado}/periodos"))
+        anos = [int(p["id"]) for p in periodos if str(p.get("id", "")).isdigit()]
+    except Exception:
+        anos = anos_sidra(baixar(f"https://apisidra.ibge.gov.br/values/t/{agregado}/n1/all/v/all/p/last%201"))
     return max(anos) if anos else None
 
 

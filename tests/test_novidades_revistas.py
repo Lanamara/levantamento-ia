@@ -457,3 +457,16 @@ def test_verificar_estados_e_aviso(tmp_path):
     assert len(novas) == 1 and "PEVS" in (tmp_path / "bases_aviso.txt").read_text(encoding="utf-8")
     bases.gravar(tmp_path, [dict(linhas[1])], "2026-12-01")
     assert not (tmp_path / "bases_aviso.txt").exists()
+
+
+def test_versao_ibge_usa_sidra_se_agregados_falhar():
+    sidra = json.dumps([{"D1C": "Brasil (Código)", "D3C": "Ano (Código)", "V": "Valor"},
+                        {"D1C": "1", "D3C": "2025", "V": "10"}, {"D1C": "1", "D3C": "2025", "V": "7"}])
+
+    def baixar(url):
+        if "servicodados" in url:
+            raise OSError("timed out")
+        assert "apisidra.ibge.gov.br/values/t/5930/" in url and url.endswith("/p/last%201")
+        return sidra
+
+    assert bases.versao_ibge(5930, baixar=baixar) == 2025
