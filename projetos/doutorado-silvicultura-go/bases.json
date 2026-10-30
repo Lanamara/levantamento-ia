@@ -2,8 +2,7 @@
  "PEVS (IBGE, tabela 5930)": {
   "tipo": "ibge",
   "agregado": 5930,
-  "versao_usada": 2025,
-  "so_local": true
+  "versao_usada": 2025
  },
  "MapBiomas Brasil (coleção)": {
   "tipo": "pagina",
