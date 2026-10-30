@@ -28,15 +28,28 @@ import html
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from projeto import barrar_exemplo, opcao_exemplo  # noqa: E402
 
-UA = {"User-Agent": "levantamento-ia/1.0 (verificador de versões; uso acadêmico)"}
+# Só ASCII: acentos no User-Agent tornam o cabeçalho inválido e alguns servidores (IBGE) respondem 403.
+UA = {"User-Agent": "levantamento-ia/1.0 (+https://github.com/Lanamara/levantamento-ia)"}
+
+
+def baixar_curl(url, timeout=60):
+    """Mesma consulta pelo curl, quando o servidor recusa o urllib (o curl se identifica como curl)."""
+    r = subprocess.run(["curl", "-sS", "-f", "-L", "--max-time", str(timeout), url],
+                       capture_output=True, timeout=timeout + 10)
+    if r.returncode != 0:
+        raise OSError(f"curl saiu com código {r.returncode}: {r.stderr.decode(errors='replace').strip()}")
+    return r.stdout.decode("utf-8", errors="replace")
 
 
 def baixar(url, tentativas=3, timeout=60):
@@ -46,6 +59,12 @@ def baixar(url, tentativas=3, timeout=60):
         try:
             req = urllib.request.Request(url, headers=UA)
             return urllib.request.urlopen(req, timeout=timeout).read().decode("utf-8", errors="replace")
+        except urllib.error.HTTPError as e:
+            if e.code == 403 and shutil.which("curl"):
+                return baixar_curl(url, timeout)
+            ultimo = e
+            if i + 1 < tentativas:
+                time.sleep(5 * (i + 1))
         except Exception as e:
             ultimo = e
             if i + 1 < tentativas:

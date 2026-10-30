@@ -480,3 +480,14 @@ def test_base_so_local_no_github(monkeypatch):
     monkeypatch.setenv("GITHUB_ACTIONS", "false")
     linhas = bases.verificar(cfg, baixar=lambda u: json.dumps([{"id": "2025"}]))
     assert linhas[0]["estado"] == "ATUAL"
+
+
+def test_baixar_usa_curl_quando_403(monkeypatch):
+    import urllib.error
+    def recusa(req, timeout):
+        raise urllib.error.HTTPError(req.full_url, 403, "Forbidden", {}, None)
+    monkeypatch.setattr(bases.urllib.request, "urlopen", recusa)
+    monkeypatch.setattr(bases.shutil, "which", lambda nome: "/usr/bin/curl")
+    monkeypatch.setattr(bases, "baixar_curl", lambda url, timeout: "ok via curl")
+    assert bases.baixar("https://servicodados.ibge.gov.br/x") == "ok via curl"
+    assert bases.UA["User-Agent"].isascii()
